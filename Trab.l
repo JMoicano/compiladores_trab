@@ -2,9 +2,9 @@
   #include<stdio.h>
 %}
 
-digit			[0-9]
-letter			[a-zA-Z]
-p_reservada			"algoritmo"|"inicio"|"fim"
+digit				[0-9]
+letter				[a-zA-Z]
+p_reservada			("algoritmo"|"inicio"|"fim"
 					|"fim_variaveis"|"variáveis"|"inteiro"
 					|"real"|"caractere"|"literal"
 					|"lógico"|"início"|"ou"
@@ -16,7 +16,7 @@ p_reservada			"algoritmo"|"inicio"|"fim"
 					|"reais"|"caracteres"|"literais"
 					|"lógicos"|"função"|"retorne"
 					|"passo"|"logico"
-logico				"verdadeiro"|"falso"
+logico				"verdadeiro"|"falso")
 operador_aritmetico	["+""-""*""/""%""++""--"]
 operador_relacional	[>">="<"<="="<>"]
 operador_logico		e|ou|nao
@@ -32,7 +32,7 @@ fim_linha			"\n"
 {digit}+				{ printf("%s -> INTEIRO\n",yytext); }
 {digit}+("."){digit}+	{ printf("%s -> REAL\n",yytext); }
 \'{letter}{1}\'			{ printf("%s -> CARACTERE\n",yytext); }
-\"{letter}{2,}\"		{ printf("%s -> LITERAL\n",yytext); }
+\"{letter}*\"		{ printf("%s -> LITERAL\n",yytext); }
 {logico}				{ printf("%s -> LOGICO\n",yytext); }
 {operador_aritmetico}	{ printf("%s -> OPERADOR_ARITMETICO\n",yytext); }
 {operador_relacional}	{ printf("%s -> OPERADOR_RELACIONAL\n",yytext); }
@@ -43,9 +43,6 @@ comentario				;
 espaco					;
 fim_linha				;
 .						{ printf("%s -> DESCONHECIDO\n",yytext); }
-
-
-. {}
 
 %%
 int main() {
