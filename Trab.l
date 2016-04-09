@@ -2,25 +2,21 @@
   #include<stdio.h>
 %}
 
-digit				[0-9]
-letter				[a-zA-Z]
-LF					"\n"
-
 T_INT_LIT			({T_OCTAL_LIT}|{T_HEX_LIT}|{T_BIN_LIT}|{T_DEC_LIT})
-T_DEC_LIT			{digit}+
-T_OCTAL_LIT			'0'('c'|'C')[0-8]+
-T_HEX_LIT			'0'('x'|'X')[{digit}{letter}]+
-T_BIN_LIT			'0'('b'|'B')[01]+
+T_DEC_LIT			[0-9]+
+T_OCTAL_LIT			0(c|C)[0-8]+
+T_HEX_LIT			0(x|X)[0-9a-fA-F]+
+T_BIN_LIT			0(b|B)[01]+
 T_REAL_LIT			{T_DEC_LIT}+\.{T_DEC_LIT}+
 
 T_CARAC_LIT			\'(\\.|[^(\'|\\)])?\'
-T_STRING_LIT		\"([^(\"|\\|{LF})]|\\.)*\"
+T_STRING_LIT		\"([^(\"|\\|"\n")]|\\.)*\"
 
-SL_COMMENT			"//"[^{LF}]*({LF})?
+SL_COMMENT			"//"[^"\n"]*("\n")?
 ML_COMMENT			(\/\*)([^(\*\/)])*(\*\/)
 COMMENT				{SL_COMMENT}|{ML_COMMENT}
 
-T_IDENTIFICADOR		([{letter}_])([{letter}{digit}_]*)
+T_IDENTIFICADOR		[a-zA-Z_][a-zA-Z0-9_]*
 
 p_reservada			("algoritmo"|"inicio"|"fim"|"fim_variaveis"|"variaveis"|"inteiro"|"real"|"caractere"|"literal"|"logico"|"inicio"|"se"|"senao"|"entao"|"fim_se"|"enquanto"|"faca"|"fim_enquanto"|"para"|"de"|"ate"|"fim_para"|"matriz"|"inteiros"|"reais"|"caracteres"|"literais"|"logicos"|"funcao"|"retorne"|"passo"|"logico")
 logico				("verdadeiro"|"falso")
@@ -33,15 +29,19 @@ comentario			("/*"."*/")|("//"."\n")
 espaco				" "
 
 %%
-[{letter}_][{letter}{digit}_]*	{ printf("%s -> IDENTIFICADOR\n",yytext); }
-%{
-/*{p_reservada}			{ printf("%s -> PALAVRA_RESERVADA\n",yytext); }
+
 {T_INT_LIT}				{ printf("%s -> INTEIRO\n",yytext); }
+T_HEX_LIT				{ printf("PEITOBUNDA\n"); }
+{p_reservada}			{ printf("%s -> PALAVRA_RESERVADA\n",yytext); }
 {T_REAL_LIT}			{ printf("%s -> REAL\n",yytext); }
 {T_CARAC_LIT}			{ printf("%s -> CARACTERE\n",yytext); }
 {T_STRING_LIT}			{ printf("%s -> LITERAL\n",yytext); }
-SL_COMMENT				{ printf("COMMENT\n"); }
 {simbolo_especial}		{ printf("%s -> SIMBOLO_ESPECIAL\n",yytext); }
+SL_COMMENT				{ printf("COMMENT\n"); }
+"//"[^"\n"]*("\n")?		{ printf("LF\n"); }
+%{
+/*
+[a-zA-Z_][a-zA-Z0-9_]*	{ printf("%s -> IDENTIFICADOR\n",yytext); }
 
 {logico}				
 \"						{ printf("Achei\n"); }
@@ -52,8 +52,8 @@ SL_COMMENT				{ printf("COMMENT\n"); }
 comentario				;
 espaco					;
 fim_linha				;
-*/%}
 ;						{ printf("PV\n"); }
+*/%}
 .						;
 %{
 	/*{ printf("%s -> DESCONHECIDO\n",yytext); }*/
