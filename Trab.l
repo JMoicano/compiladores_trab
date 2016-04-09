@@ -22,15 +22,17 @@ operador_relacional	[>">="<"<="="<>"]
 operador_logico		e|ou|nao
 atribuicao			:=
 simbolo_especial	["("")""[""]"","";"":"]
-comentario			("/*"."*/")|("//"."/n")
+comentario			("/*"."*/")|("//"."\n")
+espaco				" "
+fim_linha			"\n"
 
 %%
 {p_reservada}			{ printf("%s -> PALAVRA_RESERVADA\n",yytext); }
 //TODO: Olhar regras de identificadores no manual da linguagem
 {digit}+				{ printf("%s -> INTEIRO\n",yytext); }
 {digit}+("."){digit}+	{ printf("%s -> REAL\n",yytext); }
-/'{letter}{1}/'			{ printf("%s -> CARACTERE\n",yytext); }
-/"{letter}{2,}/"		{ printf("%s -> LITERAL\n",yytext); }
+\'{letter}{1}\'			{ printf("%s -> CARACTERE\n",yytext); }
+\"{letter}{2,}\"		{ printf("%s -> LITERAL\n",yytext); }
 {logico}				{ printf("%s -> LOGICO\n",yytext); }
 {operador_aritmetico}	{ printf("%s -> OPERADOR_ARITMETICO\n",yytext); }
 {operador_relacional}	{ printf("%s -> OPERADOR_RELACIONAL\n",yytext); }
@@ -38,6 +40,8 @@ comentario			("/*"."*/")|("//"."/n")
 {atribuicao}			{ printf("%s -> ATRIBUICAO\n",yytext); }
 {simbolo_especial}		{ printf("%s -> SIMBOLO_ESPECIAL\n",yytext); }
 comentario				;
+espaco					;
+fim_linha				;
 .						{ printf("%s -> DESCONHECIDO\n",yytext); }
 
 
