@@ -1,48 +1,63 @@
-﻿%{
+%{
   #include<stdio.h>
 %}
 
 digit				[0-9]
 letter				[a-zA-Z]
-p_reservada			("algoritmo"|"inicio"|"fim"
-					|"fim_variaveis"|"variáveis"|"inteiro"
-					|"real"|"caractere"|"literal"
-					|"lógico"|"início"|"ou"
-					|"e"|"não"|"se"
-					|"senão"|"então"|"fim_se"
-					|"enquanto"|"faça"|"fim_enquanto"
-					|"para"|"de"|"até"
-					|"fim_para"|"matriz"|"inteiros"
-					|"reais"|"caracteres"|"literais"
-					|"lógicos"|"função"|"retorne"
-					|"passo"|"logico"
-logico				"verdadeiro"|"falso")
-operador_aritmetico	["+""-""*""/""%""++""--"]
+LF					"\n"
+
+T_INT_LIT			({T_OCTAL_LIT}|{T_HEX_LIT}|{T_BIN_LIT}|{T_DEC_LIT})
+T_DEC_LIT			{digit}+
+T_OCTAL_LIT			'0'('c'|'C')[0-8]+
+T_HEX_LIT			'0'('x'|'X')[{digit}{letter}]+
+T_BIN_LIT			'0'('b'|'B')[01]+
+T_REAL_LIT			{T_DEC_LIT}+\.{T_DEC_LIT}+
+
+T_CARAC_LIT			\'(\\.|[^(\'|\\)])?\'
+T_STRING_LIT		\"([^(\"|\\|{LF})]|\\.)*\"
+
+SL_COMMENT			"//"[^{LF}]*({LF})?
+ML_COMMENT			(\/\*)([^(\*\/)])*(\*\/)
+COMMENT				{SL_COMMENT}|{ML_COMMENT}
+
+T_IDENTIFICADOR		([{letter}_])([{letter}{digit}_]*)
+
+p_reservada			("algoritmo"|"inicio"|"fim"|"fim_variaveis"|"variaveis"|"inteiro"|"real"|"caractere"|"literal"|"logico"|"inicio"|"se"|"senao"|"entao"|"fim_se"|"enquanto"|"faca"|"fim_enquanto"|"para"|"de"|"ate"|"fim_para"|"matriz"|"inteiros"|"reais"|"caracteres"|"literais"|"logicos"|"funcao"|"retorne"|"passo"|"logico")
+logico				("verdadeiro"|"falso")
+operador_aritmetico	(\+|-|\*|\/|\%|"++"|"--")
 operador_relacional	[>">="<"<="="<>"]
 operador_logico		e|ou|nao
 atribuicao			:=
-simbolo_especial	["("")""[""]"","";"":"]
+simbolo_especial	("("|")"|"["|"]"|","|";"|":")
 comentario			("/*"."*/")|("//"."\n")
 espaco				" "
-fim_linha			"\n"
 
 %%
-{p_reservada}			{ printf("%s -> PALAVRA_RESERVADA\n",yytext); }
-//TODO: Olhar regras de identificadores no manual da linguagem
-{digit}+				{ printf("%s -> INTEIRO\n",yytext); }
-{digit}+("."){digit}+	{ printf("%s -> REAL\n",yytext); }
-\'{letter}{1}\'			{ printf("%s -> CARACTERE\n",yytext); }
-\"{letter}*\"		{ printf("%s -> LITERAL\n",yytext); }
-{logico}				{ printf("%s -> LOGICO\n",yytext); }
+[{letter}_][{letter}{digit}_]*	{ printf("%s -> IDENTIFICADOR\n",yytext); }
+%{
+/*{p_reservada}			{ printf("%s -> PALAVRA_RESERVADA\n",yytext); }
+{T_INT_LIT}				{ printf("%s -> INTEIRO\n",yytext); }
+{T_REAL_LIT}			{ printf("%s -> REAL\n",yytext); }
+{T_CARAC_LIT}			{ printf("%s -> CARACTERE\n",yytext); }
+{T_STRING_LIT}			{ printf("%s -> LITERAL\n",yytext); }
+SL_COMMENT				{ printf("COMMENT\n"); }
+{simbolo_especial}		{ printf("%s -> SIMBOLO_ESPECIAL\n",yytext); }
+
+{logico}				
+\"						{ printf("Achei\n"); }
 {operador_aritmetico}	{ printf("%s -> OPERADOR_ARITMETICO\n",yytext); }
 {operador_relacional}	{ printf("%s -> OPERADOR_RELACIONAL\n",yytext); }
 {operador_logico}		{ printf("%s -> OPERADOR_LOGICO\n",yytext); }
 {atribuicao}			{ printf("%s -> ATRIBUICAO\n",yytext); }
-{simbolo_especial}		{ printf("%s -> SIMBOLO_ESPECIAL\n",yytext); }
 comentario				;
 espaco					;
 fim_linha				;
-.						{ printf("%s -> DESCONHECIDO\n",yytext); }
+*/%}
+;						{ printf("PV\n"); }
+.						;
+%{
+	/*{ printf("%s -> DESCONHECIDO\n",yytext); }*/
+%}
 
 %%
 int main() {
