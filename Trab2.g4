@@ -35,8 +35,8 @@ literal				:	T_STRING_LIT
 					|	T_INT_LIT
 					|	T_REAL_LIT
 					|	T_CARAC_LIT
-				//	|	T_KW_VERDADEIRO
-				//	|	T_KW_FALSO
+					|	T_KW_VERDADEIRO
+					|	T_KW_FALSO
 				;
 
 fargs				:	expr (',' expr)*;
@@ -112,6 +112,9 @@ T_INT_LIT				:	T_OCTAL_LIT|T_HEX_LIT|T_BIN_LIT|T_DEC_LIT;
 
 T_CARAC_LIT				:	'\''(~('\''|'\\')|'\\'.)?'\'';
 T_STRING_LIT			:	'"'(~('"'|'\\'| '\r' | '\n' )|'\\'.)*'"';
+
+T_KW_VERDADEIRO			:	'verdadeiro';
+T_KW_FALSO				:	'falso';
 
 SL_COMMENT				:	'/'[~LF]*('\n')?;
 ML_COMMENT				:	'/*' .*? '*/';
