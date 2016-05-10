@@ -10,7 +10,8 @@ import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
  * operations with no return type.
  */
 public class Trab2BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements Trab2Visitor<T> {
-	/**
+	private static int nodeCount = 0;
+        /**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
@@ -156,7 +157,11 @@ public class Trab2BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements 
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitExprOr(Trab2Parser.ExprOrContext ctx) { return visitChildren(ctx); }
+	@Override public T visitExprOr(Trab2Parser.ExprOrContext ctx) {
+            System.out.println(ctx.expr(0).getText());
+            System.out.println(ctx.op.getText());
+            System.out.println(ctx.expr(1).getText());
+            return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
