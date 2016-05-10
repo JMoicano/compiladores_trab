@@ -38,11 +38,11 @@ lvalue				:	T_IDENTIFICADOR ('[' expr ']')*;
 					
 stm_attr			:	lvalue ':=' expr ';'
 					;
-stm_se				:	'se' expr 'entao' stm_list ('senao' stm_list)? 'fim_se'
+stm_se				:	'se' expr 'entao' stm_list+ ('senao' stm_list+)? 'fim_se'
 					;
-stm_enquanto		:	'enquanto' expr 'faca' stm_list 'fim_enquanto'
+stm_enquanto		:	'enquanto' expr 'faca' stm_list+ 'fim_enquanto'
 					;
-stm_para			:	'para' lvalue 'de' expr 'ate' expr passo? 'faca' stm_list 'fim_para'
+stm_para			:	'para' lvalue 'de' expr 'ate' expr passo? 'faca' stm_list+ 'fim_para'
 					;
 passo				:	'passo' ('+'|'-')? T_INT_LIT
 					;
@@ -63,11 +63,6 @@ termo				:	fcall
 					|	'(' expr ')'
 					;
 					
-algoritmo teste;
-inicio
-    x := 42 + 3;
-    f := 0 <= 1;
-fim
 fcall				:	T_IDENTIFICADOR '(' fargs? ')';
 
 
@@ -82,9 +77,7 @@ literal				:	T_STRING_LIT
 					|	T_KW_FALSO
 				;
 
-func_decls			:	'funcao' T_IDENTIFICADOR '(' fparams? ')' (':' tp_primitivo)?
-fvar_decl
-stm_block
+func_decls			:	'funcao' T_IDENTIFICADOR '(' fparams? ')' (':' tp_primitivo)? fvar_decl stm_block
 					;
 fvar_decl			:	(var_decl ';')*
 					;
@@ -109,8 +102,8 @@ T_KW_FALSO              :   'falso';
 T_CARAC_LIT				:	'\''(~('\''|'\\')|'\\'.)?'\'';
 T_STRING_LIT			:	'"'(~('"'|'\\'| '\r' | '\n' )|'\\'.)*'"';
 
-SL_COMMENT				:	'/'[~LF]*('\n')?;
-ML_COMMENT				:	'/*' .*? '*/';
+SL_COMMENT				:	'//'[~LF]*('\n')? -> skip;
+ML_COMMENT				:	'/*' .*? '*/' -> skip;      
 
 T_IDENTIFICADOR			:	[a-zA-Z'_'][a-zA-Z0-9'_']*;
 

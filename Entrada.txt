@@ -16,4 +16,3 @@ inicio
   leg := falso;
   imprima("Ola verdadeiro a e i o u 14 32.4");
 fim
-#

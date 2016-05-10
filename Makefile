@@ -1,4 +1,9 @@
 all:
-	flex Trab.l
-	gcc lex.yy.c -lfl
-	./a.out < Entrada.txt
+	compile
+	
+compile:
+	antlr4 -visitor Trab2.g4
+	javac *.java
+
+clean:
+	rm *.class
