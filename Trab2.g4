@@ -2,7 +2,7 @@ grammar Trab2;
 
 algoritmo			:	declaracao_algoritmo (var_decl_block)? stm_block (func_decls)* EOF
 					;
-declaracao_algoritmo:	'algoritmo' T_IDENTIFICADOR ';'
+declaracao_algoritmo    :	'algoritmo' T_IDENTIFICADOR ';'
 					;
 var_decl_block		:	'variaveis' (var_decl ';')+ 'fim_variaveis'
 					;
@@ -102,8 +102,8 @@ T_KW_FALSO              :   'falso';
 T_CARAC_LIT				:	'\''(~('\''|'\\')|'\\'.)?'\'';
 T_STRING_LIT			:	'"'(~('"'|'\\'| '\r' | '\n' )|'\\'.)*'"';
 
-SL_COMMENT				:	'//'[~LF]*('\n')? -> skip;
-ML_COMMENT				:	'/*' .*? '*/' -> skip;      
+SL_COMMENT				:	'//'[~LF]*(LF)? -> skip;
+ML_COMMENT				:	'/*'.*?'*/' -> skip;      
 
 T_IDENTIFICADOR			:	[a-zA-Z'_'][a-zA-Z0-9'_']*;
 

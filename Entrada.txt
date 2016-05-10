@@ -1,18 +1,11 @@
 /*
-  Nosso primeiro programa
-*/
-
-//dsfgas
-
-algoritmo olamunto;
-
+ *multiline
+ */
+ 
+ //essa puta vagabunda mais parecida com a medusa
+ 
+algoritmo teste;
 inicio
-  inteiro int := 0xa1;
-  reais re := 12.4;
-  int + re;
-  int >= re;
-  caractere car := 'e';
-  logico leg := verdadeiro;
-  leg := falso;
-  imprima("Ola verdadeiro a e i o u 14 32.4");
+	x := 42 + 3;
+	f := 0 <= 1;
 fim
