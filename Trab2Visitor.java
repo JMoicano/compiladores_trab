@@ -106,11 +106,75 @@ public interface Trab2Visitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitPasso(Trab2Parser.PassoContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link Trab2Parser#expr}.
+	 * Visit a parse tree produced by the {@code ExprAnd}
+	 * labeled alternative in {@link Trab2Parser#expr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitExpr(Trab2Parser.ExprContext ctx);
+	T visitExprAnd(Trab2Parser.ExprAndContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprAddSub}
+	 * labeled alternative in {@link Trab2Parser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprAddSub(Trab2Parser.ExprAddSubContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprPow}
+	 * labeled alternative in {@link Trab2Parser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprPow(Trab2Parser.ExprPowContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprBinaryOr}
+	 * labeled alternative in {@link Trab2Parser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprBinaryOr(Trab2Parser.ExprBinaryOrContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprOr}
+	 * labeled alternative in {@link Trab2Parser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprOr(Trab2Parser.ExprOrContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprComp}
+	 * labeled alternative in {@link Trab2Parser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprComp(Trab2Parser.ExprCompContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprMultDiv}
+	 * labeled alternative in {@link Trab2Parser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprMultDiv(Trab2Parser.ExprMultDivContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprBinaryAnd}
+	 * labeled alternative in {@link Trab2Parser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprBinaryAnd(Trab2Parser.ExprBinaryAndContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprAtrrib}
+	 * labeled alternative in {@link Trab2Parser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprAtrrib(Trab2Parser.ExprAtrribContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprTermo}
+	 * labeled alternative in {@link Trab2Parser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprTermo(Trab2Parser.ExprTermoContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link Trab2Parser#termo}.
 	 * @param ctx the parse tree

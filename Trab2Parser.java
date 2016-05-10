@@ -1174,30 +1174,237 @@ public class Trab2Parser extends Parser {
 	}
 
 	public static class ExprContext extends ParserRuleContext {
-		public TermoContext termo() {
-			return getRuleContext(TermoContext.class,0);
+		public ExprContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
 		}
+		@Override public int getRuleIndex() { return RULE_expr; }
+	 
+		public ExprContext() { }
+		public void copyFrom(ExprContext ctx) {
+			super.copyFrom(ctx);
+		}
+	}
+	public static class ExprAndContext extends ExprContext {
+		public Token op;
 		public List<ExprContext> expr() {
 			return getRuleContexts(ExprContext.class);
 		}
 		public ExprContext expr(int i) {
 			return getRuleContext(ExprContext.class,i);
 		}
-		public ExprContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_expr; }
+		public ExprAndContext(ExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof Trab2Listener ) ((Trab2Listener)listener).enterExpr(this);
+			if ( listener instanceof Trab2Listener ) ((Trab2Listener)listener).enterExprAnd(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof Trab2Listener ) ((Trab2Listener)listener).exitExpr(this);
+			if ( listener instanceof Trab2Listener ) ((Trab2Listener)listener).exitExprAnd(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Trab2Visitor ) return ((Trab2Visitor<? extends T>)visitor).visitExpr(this);
+			if ( visitor instanceof Trab2Visitor ) return ((Trab2Visitor<? extends T>)visitor).visitExprAnd(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class ExprAddSubContext extends ExprContext {
+		public Token op;
+		public List<ExprContext> expr() {
+			return getRuleContexts(ExprContext.class);
+		}
+		public ExprContext expr(int i) {
+			return getRuleContext(ExprContext.class,i);
+		}
+		public ExprAddSubContext(ExprContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Trab2Listener ) ((Trab2Listener)listener).enterExprAddSub(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Trab2Listener ) ((Trab2Listener)listener).exitExprAddSub(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof Trab2Visitor ) return ((Trab2Visitor<? extends T>)visitor).visitExprAddSub(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class ExprPowContext extends ExprContext {
+		public List<ExprContext> expr() {
+			return getRuleContexts(ExprContext.class);
+		}
+		public ExprContext expr(int i) {
+			return getRuleContext(ExprContext.class,i);
+		}
+		public ExprPowContext(ExprContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Trab2Listener ) ((Trab2Listener)listener).enterExprPow(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Trab2Listener ) ((Trab2Listener)listener).exitExprPow(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof Trab2Visitor ) return ((Trab2Visitor<? extends T>)visitor).visitExprPow(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class ExprBinaryOrContext extends ExprContext {
+		public List<ExprContext> expr() {
+			return getRuleContexts(ExprContext.class);
+		}
+		public ExprContext expr(int i) {
+			return getRuleContext(ExprContext.class,i);
+		}
+		public ExprBinaryOrContext(ExprContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Trab2Listener ) ((Trab2Listener)listener).enterExprBinaryOr(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Trab2Listener ) ((Trab2Listener)listener).exitExprBinaryOr(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof Trab2Visitor ) return ((Trab2Visitor<? extends T>)visitor).visitExprBinaryOr(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class ExprOrContext extends ExprContext {
+		public Token op;
+		public List<ExprContext> expr() {
+			return getRuleContexts(ExprContext.class);
+		}
+		public ExprContext expr(int i) {
+			return getRuleContext(ExprContext.class,i);
+		}
+		public ExprOrContext(ExprContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Trab2Listener ) ((Trab2Listener)listener).enterExprOr(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Trab2Listener ) ((Trab2Listener)listener).exitExprOr(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof Trab2Visitor ) return ((Trab2Visitor<? extends T>)visitor).visitExprOr(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class ExprCompContext extends ExprContext {
+		public Token op;
+		public List<ExprContext> expr() {
+			return getRuleContexts(ExprContext.class);
+		}
+		public ExprContext expr(int i) {
+			return getRuleContext(ExprContext.class,i);
+		}
+		public ExprCompContext(ExprContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Trab2Listener ) ((Trab2Listener)listener).enterExprComp(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Trab2Listener ) ((Trab2Listener)listener).exitExprComp(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof Trab2Visitor ) return ((Trab2Visitor<? extends T>)visitor).visitExprComp(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class ExprMultDivContext extends ExprContext {
+		public Token op;
+		public List<ExprContext> expr() {
+			return getRuleContexts(ExprContext.class);
+		}
+		public ExprContext expr(int i) {
+			return getRuleContext(ExprContext.class,i);
+		}
+		public ExprMultDivContext(ExprContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Trab2Listener ) ((Trab2Listener)listener).enterExprMultDiv(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Trab2Listener ) ((Trab2Listener)listener).exitExprMultDiv(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof Trab2Visitor ) return ((Trab2Visitor<? extends T>)visitor).visitExprMultDiv(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class ExprBinaryAndContext extends ExprContext {
+		public List<ExprContext> expr() {
+			return getRuleContexts(ExprContext.class);
+		}
+		public ExprContext expr(int i) {
+			return getRuleContext(ExprContext.class,i);
+		}
+		public ExprBinaryAndContext(ExprContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Trab2Listener ) ((Trab2Listener)listener).enterExprBinaryAnd(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Trab2Listener ) ((Trab2Listener)listener).exitExprBinaryAnd(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof Trab2Visitor ) return ((Trab2Visitor<? extends T>)visitor).visitExprBinaryAnd(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class ExprAtrribContext extends ExprContext {
+		public Token op;
+		public List<ExprContext> expr() {
+			return getRuleContexts(ExprContext.class);
+		}
+		public ExprContext expr(int i) {
+			return getRuleContext(ExprContext.class,i);
+		}
+		public ExprAtrribContext(ExprContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Trab2Listener ) ((Trab2Listener)listener).enterExprAtrrib(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Trab2Listener ) ((Trab2Listener)listener).exitExprAtrrib(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof Trab2Visitor ) return ((Trab2Visitor<? extends T>)visitor).visitExprAtrrib(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class ExprTermoContext extends ExprContext {
+		public Token op;
+		public TermoContext termo() {
+			return getRuleContext(TermoContext.class,0);
+		}
+		public ExprTermoContext(ExprContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Trab2Listener ) ((Trab2Listener)listener).enterExprTermo(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Trab2Listener ) ((Trab2Listener)listener).exitExprTermo(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof Trab2Visitor ) return ((Trab2Visitor<? extends T>)visitor).visitExprTermo(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1219,14 +1426,19 @@ public class Trab2Parser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			{
+			_localctx = new ExprTermoContext(_localctx);
+			_ctx = _localctx;
+			_prevctx = _localctx;
+
 			setState(182);
 			_la = _input.LA(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__35) | (1L << T__36) | (1L << T__53) | (1L << T__54))) != 0)) {
 				{
 				setState(181);
+				((ExprTermoContext)_localctx).op = _input.LT(1);
 				_la = _input.LA(1);
 				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__35) | (1L << T__36) | (1L << T__53) | (1L << T__54))) != 0)) ) {
-				_errHandler.recoverInline(this);
+					((ExprTermoContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 				} else {
 					consume();
 				}
@@ -1250,14 +1462,15 @@ public class Trab2Parser extends Parser {
 					switch ( getInterpreter().adaptivePredict(_input,14,_ctx) ) {
 					case 1:
 						{
-						_localctx = new ExprContext(_parentctx, _parentState);
+						_localctx = new ExprOrContext(new ExprContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
 						setState(186);
 						if (!(precpred(_ctx, 10))) throw new FailedPredicateException(this, "precpred(_ctx, 10)");
 						setState(187);
+						((ExprOrContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
 						if ( !(_la==T__37 || _la==T__38) ) {
-						_errHandler.recoverInline(this);
+							((ExprOrContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 						} else {
 							consume();
 						}
@@ -1267,14 +1480,15 @@ public class Trab2Parser extends Parser {
 						break;
 					case 2:
 						{
-						_localctx = new ExprContext(_parentctx, _parentState);
+						_localctx = new ExprAndContext(new ExprContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
 						setState(189);
 						if (!(precpred(_ctx, 9))) throw new FailedPredicateException(this, "precpred(_ctx, 9)");
 						setState(190);
+						((ExprAndContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
 						if ( !(_la==T__39 || _la==T__40) ) {
-						_errHandler.recoverInline(this);
+							((ExprAndContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 						} else {
 							consume();
 						}
@@ -1284,50 +1498,57 @@ public class Trab2Parser extends Parser {
 						break;
 					case 3:
 						{
-						_localctx = new ExprContext(_parentctx, _parentState);
+						_localctx = new ExprBinaryOrContext(new ExprContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
 						setState(192);
 						if (!(precpred(_ctx, 8))) throw new FailedPredicateException(this, "precpred(_ctx, 8)");
+						{
 						setState(193);
 						match(T__41);
+						}
 						setState(194);
 						expr(9);
 						}
 						break;
 					case 4:
 						{
-						_localctx = new ExprContext(_parentctx, _parentState);
+						_localctx = new ExprPowContext(new ExprContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
 						setState(195);
 						if (!(precpred(_ctx, 7))) throw new FailedPredicateException(this, "precpred(_ctx, 7)");
+						{
 						setState(196);
 						match(T__42);
+						}
 						setState(197);
 						expr(8);
 						}
 						break;
 					case 5:
 						{
-						_localctx = new ExprContext(_parentctx, _parentState);
+						_localctx = new ExprBinaryAndContext(new ExprContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
 						setState(198);
 						if (!(precpred(_ctx, 6))) throw new FailedPredicateException(this, "precpred(_ctx, 6)");
+						{
 						setState(199);
 						match(T__43);
+						}
 						setState(200);
 						expr(7);
 						}
 						break;
 					case 6:
 						{
-						_localctx = new ExprContext(_parentctx, _parentState);
+						_localctx = new ExprAtrribContext(new ExprContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
 						setState(201);
 						if (!(precpred(_ctx, 5))) throw new FailedPredicateException(this, "precpred(_ctx, 5)");
 						setState(202);
+						((ExprAtrribContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
 						if ( !(_la==T__44 || _la==T__45) ) {
-						_errHandler.recoverInline(this);
+							((ExprAtrribContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 						} else {
 							consume();
 						}
@@ -1337,14 +1558,15 @@ public class Trab2Parser extends Parser {
 						break;
 					case 7:
 						{
-						_localctx = new ExprContext(_parentctx, _parentState);
+						_localctx = new ExprCompContext(new ExprContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
 						setState(204);
 						if (!(precpred(_ctx, 4))) throw new FailedPredicateException(this, "precpred(_ctx, 4)");
 						setState(205);
+						((ExprCompContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
 						if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__46) | (1L << T__47) | (1L << T__48) | (1L << T__49))) != 0)) ) {
-						_errHandler.recoverInline(this);
+							((ExprCompContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 						} else {
 							consume();
 						}
@@ -1354,14 +1576,15 @@ public class Trab2Parser extends Parser {
 						break;
 					case 8:
 						{
-						_localctx = new ExprContext(_parentctx, _parentState);
+						_localctx = new ExprAddSubContext(new ExprContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
 						setState(207);
 						if (!(precpred(_ctx, 3))) throw new FailedPredicateException(this, "precpred(_ctx, 3)");
 						setState(208);
+						((ExprAddSubContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
 						if ( !(_la==T__35 || _la==T__36) ) {
-						_errHandler.recoverInline(this);
+							((ExprAddSubContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 						} else {
 							consume();
 						}
@@ -1371,14 +1594,15 @@ public class Trab2Parser extends Parser {
 						break;
 					case 9:
 						{
-						_localctx = new ExprContext(_parentctx, _parentState);
+						_localctx = new ExprMultDivContext(new ExprContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
 						setState(210);
 						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
 						setState(211);
+						((ExprMultDivContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
 						if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__50) | (1L << T__51) | (1L << T__52))) != 0)) ) {
-						_errHandler.recoverInline(this);
+							((ExprMultDivContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 						} else {
 							consume();
 						}

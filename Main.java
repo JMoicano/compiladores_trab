@@ -11,10 +11,10 @@ public class Main {
         InputStream is = System.in;
         if ( inputFile!=null ) is = new FileInputStream(inputFile);
         ANTLRInputStream input = new ANTLRInputStream(is);
-        LabeledExprLexer lexer = new LabeledExprLexer(input);
+        Trab2Lexer lexer = new Trab2Lexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
-        LabeledExprParser parser = new LabeledExprParser(tokens);
-        ParseTree tree = parser.prog(); // parse
+        Trab2Parser parser = new Trab2Parser(tokens);
+        ParseTree tree = parser.algoritmo(); // parse
 
         Trab2BaseVisitor visitor = new Trab2BaseVisitor();
         visitor.visit(tree);

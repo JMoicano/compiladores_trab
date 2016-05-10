@@ -46,16 +46,16 @@ stm_para			:	'para' lvalue 'de' expr 'ate' expr passo? 'faca' stm_list 'fim_para
 					;
 passo				:	'passo' ('+'|'-')? T_INT_LIT
 					;
-expr				:	expr ('ou'|'||') expr
-					|	expr ('e'|'&&') expr
-					|	expr '|' expr
-					|	expr '^' expr
-					|	expr '&' expr
-					|	expr ('='|'<>') expr
-					|	expr ('>'|'>='|'<'|'<=') expr
-					|	expr ('+' | '-') expr
-					|	expr ('/'|'*'|'%') expr
-					|	('+'|'-'|'~'|'nao')? termo
+expr				:	expr op=('ou'|'||') expr                   #ExprOr
+					|	expr op=('e'|'&&') expr            #ExprAnd
+					|	expr ('|') expr                   #ExprBinaryOr
+					|	expr ('^') expr                   #ExprPow
+					|	expr ('&') expr                   #ExprBinaryAnd
+					|	expr op=('='|'<>') expr            #ExprAtrrib
+					|	expr op=('>'|'>='|'<'|'<=') expr   #ExprComp
+					|	expr op=('+' | '-') expr           #ExprAddSub
+					|	expr op=('/'|'*'|'%') expr         #ExprMultDiv
+					|	op=('+'|'-'|'~'|'nao')? termo      #ExprTermo
 					;
 termo				:	fcall
 					|	lvalue
@@ -63,6 +63,11 @@ termo				:	fcall
 					|	'(' expr ')'
 					;
 					
+algoritmo teste;
+inicio
+    x := 42 + 3;
+    f := 0 <= 1;
+fim
 fcall				:	T_IDENTIFICADOR '(' fargs? ')';
 
 

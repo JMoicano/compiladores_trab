@@ -167,15 +167,125 @@ public interface Trab2Listener extends ParseTreeListener {
 	 */
 	void exitPasso(Trab2Parser.PassoContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link Trab2Parser#expr}.
+	 * Enter a parse tree produced by the {@code ExprAnd}
+	 * labeled alternative in {@link Trab2Parser#expr}.
 	 * @param ctx the parse tree
 	 */
-	void enterExpr(Trab2Parser.ExprContext ctx);
+	void enterExprAnd(Trab2Parser.ExprAndContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link Trab2Parser#expr}.
+	 * Exit a parse tree produced by the {@code ExprAnd}
+	 * labeled alternative in {@link Trab2Parser#expr}.
 	 * @param ctx the parse tree
 	 */
-	void exitExpr(Trab2Parser.ExprContext ctx);
+	void exitExprAnd(Trab2Parser.ExprAndContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ExprAddSub}
+	 * labeled alternative in {@link Trab2Parser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprAddSub(Trab2Parser.ExprAddSubContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ExprAddSub}
+	 * labeled alternative in {@link Trab2Parser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprAddSub(Trab2Parser.ExprAddSubContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ExprPow}
+	 * labeled alternative in {@link Trab2Parser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprPow(Trab2Parser.ExprPowContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ExprPow}
+	 * labeled alternative in {@link Trab2Parser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprPow(Trab2Parser.ExprPowContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ExprBinaryOr}
+	 * labeled alternative in {@link Trab2Parser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprBinaryOr(Trab2Parser.ExprBinaryOrContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ExprBinaryOr}
+	 * labeled alternative in {@link Trab2Parser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprBinaryOr(Trab2Parser.ExprBinaryOrContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ExprOr}
+	 * labeled alternative in {@link Trab2Parser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprOr(Trab2Parser.ExprOrContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ExprOr}
+	 * labeled alternative in {@link Trab2Parser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprOr(Trab2Parser.ExprOrContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ExprComp}
+	 * labeled alternative in {@link Trab2Parser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprComp(Trab2Parser.ExprCompContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ExprComp}
+	 * labeled alternative in {@link Trab2Parser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprComp(Trab2Parser.ExprCompContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ExprMultDiv}
+	 * labeled alternative in {@link Trab2Parser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprMultDiv(Trab2Parser.ExprMultDivContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ExprMultDiv}
+	 * labeled alternative in {@link Trab2Parser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprMultDiv(Trab2Parser.ExprMultDivContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ExprBinaryAnd}
+	 * labeled alternative in {@link Trab2Parser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprBinaryAnd(Trab2Parser.ExprBinaryAndContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ExprBinaryAnd}
+	 * labeled alternative in {@link Trab2Parser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprBinaryAnd(Trab2Parser.ExprBinaryAndContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ExprAtrrib}
+	 * labeled alternative in {@link Trab2Parser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprAtrrib(Trab2Parser.ExprAtrribContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ExprAtrrib}
+	 * labeled alternative in {@link Trab2Parser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprAtrrib(Trab2Parser.ExprAtrribContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ExprTermo}
+	 * labeled alternative in {@link Trab2Parser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprTermo(Trab2Parser.ExprTermoContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ExprTermo}
+	 * labeled alternative in {@link Trab2Parser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprTermo(Trab2Parser.ExprTermoContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link Trab2Parser#termo}.
 	 * @param ctx the parse tree
