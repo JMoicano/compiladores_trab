@@ -16,6 +16,9 @@ public class Main {
         Trab2Parser parser = new Trab2Parser(tokens);
         ParseTree tree = parser.algoritmo(); // parse
 
+        System.out.println("digraph {\n" +
+                            "graph [ordering=\"out\"];");
+        
         Trab2BaseVisitor visitor = new Trab2BaseVisitor();
         visitor.visit(tree);
     }

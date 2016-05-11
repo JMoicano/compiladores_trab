@@ -1,4 +1,4 @@
-// Generated from Trab2.g4 by ANTLR 4.5.3
+// Generated from Trab2.g4 by ANTLR 4.5
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class Trab2Parser extends Parser {
-	static { RuntimeMetaData.checkVersion("4.5.3", RuntimeMetaData.VERSION); }
+	static { RuntimeMetaData.checkVersion("4.5", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
@@ -670,7 +670,6 @@ public class Trab2Parser extends Parser {
 		enterRule(_localctx, 16, RULE_stm_list);
 		try {
 			setState(122);
-			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,7,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
@@ -1513,7 +1512,6 @@ public class Trab2Parser extends Parser {
 					_prevctx = _localctx;
 					{
 					setState(229);
-					_errHandler.sync(this);
 					switch ( getInterpreter().adaptivePredict(_input,18,_ctx) ) {
 					case 1:
 						{
@@ -1722,7 +1720,6 @@ public class Trab2Parser extends Parser {
 		enterRule(_localctx, 34, RULE_termo);
 		try {
 			setState(241);
-			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,20,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);

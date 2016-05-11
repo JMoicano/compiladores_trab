@@ -2,7 +2,7 @@
  *multiline
  */
  
- //essa puta vagabunda mais parecida com a medusa
+//essa puta vagabunda mais parecida com a medusa
  
 algoritmo teste;
 inicio

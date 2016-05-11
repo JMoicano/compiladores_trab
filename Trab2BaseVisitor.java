@@ -1,4 +1,5 @@
-// Generated from Trab2.g4 by ANTLR 4.5.3
+// Generated from Trab2.g4 by ANTLR 4.5
+import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
 /**
@@ -136,7 +137,20 @@ public class Trab2BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements 
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitExprAddSub(Trab2Parser.ExprAddSubContext ctx) { return visitChildren(ctx); }
+	@Override public T visitExprAddSub(Trab2Parser.ExprAddSubContext ctx) {
+            System.out.printf("node%d[label=\"expr\"];\n",nodeCount);
+            nodeCount++;
+            System.out.printf("node%d[label=\"%s\"];\n",nodeCount,ctx.op.getText());
+            nodeCount++;
+            System.out.printf("node%d[label=\"expr\"];\n",nodeCount);
+            nodeCount++;
+            return visitChildren(ctx);
+        } 
+            /*
+            System.out.println(ctx.expr(0).getText());
+            System.out.println(ctx.op.getText());
+            System.out.println(ctx.expr(1).getText());
+            }*/
 	/**
 	 * {@inheritDoc}
 	 *
@@ -157,11 +171,7 @@ public class Trab2BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements 
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitExprOr(Trab2Parser.ExprOrContext ctx) {
-            System.out.println(ctx.expr(0).getText());
-            System.out.println(ctx.op.getText());
-            System.out.println(ctx.expr(1).getText());
-            return visitChildren(ctx); }
+	@Override public T visitExprOr(Trab2Parser.ExprOrContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
