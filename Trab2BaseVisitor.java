@@ -12,6 +12,9 @@ import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
  */
 public class Trab2BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements Trab2Visitor<T> {
 	private static int nodeCount = 0;
+        private static void printNode(String label){
+            System.out.println("node" + (nodeCount++) + "[label=\"" + label + "\"];");
+        }
         /**
 	 * {@inheritDoc}
 	 *
@@ -131,12 +134,10 @@ public class Trab2BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements 
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitExprAnd(Trab2Parser.ExprAndContext ctx) { 
-            System.out.printf("node%d[label=\"expr\"];\n",nodeCount);
-            nodeCount++;
-            System.out.printf("node%d[label=\"%s\"];\n",nodeCount,ctx.op.getText());
-            nodeCount++;
-            System.out.printf("node%d[label=\"expr\"];\n",nodeCount);
-            nodeCount++;
+            printNode("expr");
+            printNode(ctx.op.getText());
+            printNode("expr");
+            
             return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
@@ -145,19 +146,12 @@ public class Trab2BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements 
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitExprAddSub(Trab2Parser.ExprAddSubContext ctx) {
-            System.out.printf("node%d[label=\"expr\"];\n",nodeCount);
-            nodeCount++;
-            System.out.printf("node%d[label=\"%s\"];\n",nodeCount,ctx.op.getText());
-            nodeCount++;
-            System.out.printf("node%d[label=\"expr\"];\n",nodeCount);
-            nodeCount++;
+            printNode("expr");
+            printNode(ctx.op.getText());
+            printNode("expr");
+            
             return visitChildren(ctx);
         } 
-            /*
-            System.out.println(ctx.expr(0).getText());
-            System.out.println(ctx.op.getText());
-            System.out.println(ctx.expr(1).getText());
-            }*/
 	/**
 	 * {@inheritDoc}
 	 *
@@ -165,14 +159,10 @@ public class Trab2BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements 
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitExprPow(Trab2Parser.ExprPowContext ctx) { 
-            
-            System.out.printf("node%d[label=\"expr\"];\n",nodeCount);
-            nodeCount++;
-            System.out.printf("node%d[label=\"^\"];\n",nodeCount);
-            nodeCount++;
-            System.out.printf("node%d[label=\"expr\"];\n",nodeCount);
-            nodeCount++;
-            
+            printNode("expr");
+            printNode("^");
+            printNode("expr");
+           
             return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
@@ -181,40 +171,9 @@ public class Trab2BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements 
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitExprBinaryOr(Trab2Parser.ExprBinaryOrContext ctx) { 
-            System.out.printf("node%d[label=\"expr\"];\n",nodeCount);
-            nodeCount++;
-            System.out.printf("node%d[label=\"|\"];\n",nodeCount);
-            nodeCount++;
-            System.out.printf("node%d[label=\"expr\"];\n",nodeCount);
-            nodeCount++;
-            return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public T visitExprOr(Trab2Parser.ExprOrContext ctx) { 
-            System.out.printf("node%d[label=\"expr\"];\n",nodeCount);
-            nodeCount++;
-            System.out.printf("node%d[label=\"%s\"];\n",nodeCount,ctx.op.getText());
-            nodeCount++;
-            System.out.printf("node%d[label=\"expr\"];\n",nodeCount);
-            nodeCount++;
-            return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public T visitExprComp(Trab2Parser.ExprCompContext ctx) { 
-            System.out.printf("node%d[label=\"expr\"];\n",nodeCount);
-            nodeCount++;
-            System.out.printf("node%d[label=\"%s\"];\n",nodeCount,ctx.op.getText());
-            nodeCount++;
-            System.out.printf("node%d[label=\"expr\"];\n",nodeCount);
-            nodeCount++;
+            printNode("expr");
+            printNode("|");
+            printNode("expr");
             
             return visitChildren(ctx); }
 	/**
@@ -223,13 +182,34 @@ public class Trab2BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements 
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitExprOr(Trab2Parser.ExprOrContext ctx) { 
+            printNode("expr");
+            printNode(ctx.op.getText());
+            printNode("expr");
+            
+            return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitExprComp(Trab2Parser.ExprCompContext ctx) { 
+            printNode("expr");
+            printNode(ctx.op.getText());
+            printNode("expr");
+
+            return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitExprMultDiv(Trab2Parser.ExprMultDivContext ctx) { 
-            System.out.printf("node%d[label=\"expr\"];\n",nodeCount);
-            nodeCount++;
-            System.out.printf("node%d[label=\"%s\"];\n",nodeCount,ctx.op.getText());
-            nodeCount++;
-            System.out.printf("node%d[label=\"expr\"];\n",nodeCount);
-            nodeCount++;
+            printNode("expr");
+            printNode(ctx.op.getText());
+            printNode("expr");
             
             return visitChildren(ctx); }
 	/**
@@ -239,12 +219,9 @@ public class Trab2BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements 
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitExprBinaryAnd(Trab2Parser.ExprBinaryAndContext ctx) { 
-            System.out.printf("node%d[label=\"expr\"];\n",nodeCount);
-            nodeCount++;
-            System.out.printf("node%d[label=\"&\"];\n",nodeCount);
-            nodeCount++;
-            System.out.printf("node%d[label=\"expr\"];\n",nodeCount);
-            nodeCount++;
+            printNode("expr");
+            printNode("&");
+            printNode("expr");
             
             return visitChildren(ctx); }
 	/**
@@ -253,13 +230,10 @@ public class Trab2BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements 
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitExprAtrrib(Trab2Parser.ExprAtrribContext ctx) { 
-            System.out.printf("node%d[label=\"expr\"];\n",nodeCount);
-            nodeCount++;
-            System.out.printf("node%d[label=\"%s\"];\n",nodeCount,ctx.op.getText());
-            nodeCount++;
-            System.out.printf("node%d[label=\"expr\"];\n",nodeCount);
-            nodeCount++;
+	@Override public T visitExprAtrrib(Trab2Parser.ExprAtrribContext ctx) {
+            printNode("expr");
+            printNode(ctx.op.getText());
+            printNode("expr");
             
             return visitChildren(ctx); }
 	/**

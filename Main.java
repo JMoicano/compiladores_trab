@@ -21,5 +21,7 @@ public class Main {
         
         Trab2BaseVisitor visitor = new Trab2BaseVisitor();
         visitor.visit(tree);
+        
+        System.out.println("}");
     }
 }
