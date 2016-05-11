@@ -102,7 +102,7 @@ T_KW_FALSO              :   'falso';
 T_CARAC_LIT				:	'\''(~('\''|'\\')|'\\'.)?'\'';
 T_STRING_LIT			:	'"'(~('"'|'\\'| '\r' | '\n' )|'\\'.)*'"';
 
-SL_COMMENT				:	'//'[~LF]*(LF)? -> skip;
+SL_COMMENT				:	'//' .*? (LF|EOF) -> skip;
 ML_COMMENT				:	'/*'.*?'*/' -> skip;      
 
 T_IDENTIFICADOR			:	[a-zA-Z'_'][a-zA-Z0-9'_']*;
