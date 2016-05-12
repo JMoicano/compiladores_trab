@@ -4,22 +4,22 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
-public class Main {
+public class GeradorArvore {
     public static void main(String[] args) throws Exception {
         String inputFile = null;
         if ( args.length>0 ) inputFile = args[0];
         InputStream is = System.in;
         if ( inputFile!=null ) is = new FileInputStream(inputFile);
         ANTLRInputStream input = new ANTLRInputStream(is);
-        Trab2Lexer lexer = new Trab2Lexer(input);
+        GPortugolLexer lexer = new GPortugolLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
-        Trab2Parser parser = new Trab2Parser(tokens);
+        GPortugolParser parser = new GPortugolParser(tokens);
         ParseTree tree = parser.algoritmo(); // parse
 
         System.out.println("digraph {\n" +
                             "graph [ordering=\"out\"];");
         
-        Trab2BaseVisitor visitor = new Trab2BaseVisitor();
+        GPortugolBaseVisitor visitor = new GPortugolBaseVisitor();
         visitor.visit(tree);
         
         System.out.println("}");

@@ -1,4 +1,4 @@
-grammar Trab2;
+grammar GPortugol;
 
 algoritmo			:	declaracao_algoritmo (var_decl_block)? stm_block (func_decls)* EOF
 					;
@@ -117,7 +117,7 @@ T_KW_VERDADEIRO         :   'verdadeiro';
 T_KW_FALSO              :   'falso';
 
 T_CARAC_LIT				:	'\''(~('\''|'\\')|'\\'.)?'\'';
-T_STRING_LIT			:	'"'(~('"'|'\\'|CR|LF)|'\\'.)*'"';
+T_STRING_LIT			:	'"'(~('"'|'\\'|'\r'|'\n')|'\\'.)*'"';
 
 SL_COMMENT				:	'//' .*? (LF|EOF) -> skip;
 ML_COMMENT				:	'/*'.*?'*/' -> skip;      
