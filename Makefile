@@ -6,5 +6,6 @@ compile:
 	javac *.java
 
 clean:
+	rm *.tokens
 	rm GPortugol*.java
 	rm *.class

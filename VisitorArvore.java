@@ -17,8 +17,9 @@ public class VisitorArvore extends GPortugolBaseVisitor<Integer> {
     private static int i;
     
     
-    private void createNode(String label){
-        System.out.println("node" + i++ + "[label=\"" + label + "\"];");
+    private int createNode(String label){
+        System.out.println("node" + i + "[label=\"" + label + "\"];");
+        return i++;
     }
     private void createChild(int p, int c){
         System.out.println("node" + p + " -> node" + c +";");
@@ -42,9 +43,9 @@ public class VisitorArvore extends GPortugolBaseVisitor<Integer> {
     @Override
     public Integer visitDeclaracao_algoritmo(GPortugolParser.Declaracao_algoritmoContext ctx) {
         int nodeNum = i;
-        createNode("algoritmo");
-        createNode(ctx.T_IDENTIFICADOR().getText());
-        createNode(";");
+        createChild(nodeNum, createNode("algoritmo"));
+        createChild(nodeNum, createNode(ctx.T_IDENTIFICADOR().getText()));
+        createChild(nodeNum, createNode(";"));
         return nodeNum;
     }
 
