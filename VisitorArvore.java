@@ -16,6 +16,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 public class VisitorArvore extends GPortugolBaseVisitor<Integer> {
 
     private static int i;
+
     private int createNode(String label) {
         System.out.println("node" + i + "[label=\"" + label + "\"];");
         return i++;
@@ -256,67 +257,98 @@ public class VisitorArvore extends GPortugolBaseVisitor<Integer> {
         createChild(nodeNum, ctx.T_INT_LIT());
         return nodeNum;
     }
-    /*
 
     @Override
     public Integer visitExprComp(GPortugolParser.ExprCompContext ctx) {
         int nodeNum = createNode("exprComp");
+        createChild(nodeNum, ctx.expr(0));
+        createChild(nodeNum, ctx.op.getText());
+        createChild(nodeNum, ctx.expr(1));
         return nodeNum;
     }
 
     @Override
     public Integer visitExprBinaryOr(GPortugolParser.ExprBinaryOrContext ctx) {
         int nodeNum = createNode("exprBinaryOr");
+        createChild(nodeNum, ctx.expr(0));
+        createChild(nodeNum, "|");
+        createChild(nodeNum, ctx.expr(1));
         return nodeNum;
     }
 
     @Override
     public Integer visitExprAddSub(GPortugolParser.ExprAddSubContext ctx) {
         int nodeNum = createNode("exprAddSub");
+        createChild(nodeNum, ctx.expr(0));
+        createChild(nodeNum, ctx.op.getText());
+        createChild(nodeNum, ctx.expr(1));
         return nodeNum;
     }
 
     @Override
     public Integer visitExprTermo(GPortugolParser.ExprTermoContext ctx) {
         int nodeNum = createNode("exprTermo");
+        if (ctx.op != null) {
+            createChild(nodeNum, ctx.op.getText());
+        }
+        createChild(nodeNum, ctx.termo());
         return nodeNum;
     }
 
     @Override
     public Integer visitExprMultDiv(GPortugolParser.ExprMultDivContext ctx) {
         int nodeNum = createNode("exprMultDiv");
+        createChild(nodeNum, ctx.expr(0));
+        createChild(nodeNum, ctx.op.getText());
+        createChild(nodeNum, ctx.expr(1));
         return nodeNum;
     }
 
     @Override
     public Integer visitExprAtrrib(GPortugolParser.ExprAtrribContext ctx) {
         int nodeNum = createNode("exprAtrrib");
+        createChild(nodeNum, ctx.expr(0));
+        createChild(nodeNum, ctx.op.getText());
+        createChild(nodeNum, ctx.expr(1));
         return nodeNum;
     }
 
     @Override
     public Integer visitExprBinaryAnd(GPortugolParser.ExprBinaryAndContext ctx) {
         int nodeNum = createNode("exprBinaryAnd");
+        createChild(nodeNum, ctx.expr(0));
+        createChild(nodeNum, "&");
+        createChild(nodeNum, ctx.expr(1));
         return nodeNum;
     }
 
     @Override
     public Integer visitExprAnd(GPortugolParser.ExprAndContext ctx) {
         int nodeNum = createNode("exprAnd");
+        createChild(nodeNum, ctx.expr(0));
+        createChild(nodeNum, ctx.op.getText());
+        createChild(nodeNum, ctx.expr(1));
         return nodeNum;
     }
 
     @Override
     public Integer visitExprOr(GPortugolParser.ExprOrContext ctx) {
         int nodeNum = createNode("exprOr");
+        createChild(nodeNum, ctx.expr(0));
+        createChild(nodeNum, ctx.op.getText());
+        createChild(nodeNum, ctx.expr(1));
         return nodeNum;
     }
 
     @Override
     public Integer visitExprPow(GPortugolParser.ExprPowContext ctx) {
         int nodeNum = createNode("exprPow");
+        createChild(nodeNum, ctx.expr(0));
+        createChild(nodeNum, "^");
+        createChild(nodeNum, ctx.expr(1));
         return nodeNum;
     }
+    /*
 
     @Override
     public Integer visitTermo(GPortugolParser.TermoContext ctx) {
