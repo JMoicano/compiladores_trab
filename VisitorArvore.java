@@ -1,5 +1,4 @@
 
-import javax.swing.JTree;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -16,29 +15,33 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 public class VisitorArvore extends GPortugolBaseVisitor<Integer> {
 
     private static int i;
-
     private int createNode(String label) {
         System.out.println("node" + i + "[label=\"" + label + "\"];");
         return i++;
     }
-
+    
     private void createChild(int p, int c) {
         System.out.println("node" + p + " -> node" + c + ";");
     }
-
+    
     private void createChild(int p, String c) {
         createChild(p, createNode(c));
     }
-
+    
     private void createChild(int p, ParserRuleContext c) {
         int childNum = visit(c);
         createChild(p, childNum);
     }
-
+    
+    private void createChild(int p, ParseTree c) {
+        int childNum = visit(c);
+        createChild(p, childNum);
+    }
+    
     private void createChild(int p, TerminalNode c) {
         createChild(p, c.getText());
     }
-
+    
     @Override
     public Integer visitAlgoritmo(GPortugolParser.AlgoritmoContext ctx) {
         i = 0;
@@ -53,7 +56,7 @@ public class VisitorArvore extends GPortugolBaseVisitor<Integer> {
         }
         return nodeNum;
     }
-
+    
     @Override
     public Integer visitDeclaracao_algoritmo(GPortugolParser.Declaracao_algoritmoContext ctx) {
         int nodeNum = createNode("algoritmo_decl");
@@ -62,7 +65,7 @@ public class VisitorArvore extends GPortugolBaseVisitor<Integer> {
         createChild(nodeNum, ";");
         return nodeNum;
     }
-
+    
     @Override
     public Integer visitVar_decl_block(GPortugolParser.Var_decl_blockContext ctx) {
         int nodeNum = createNode("var_decl_block");
@@ -73,7 +76,7 @@ public class VisitorArvore extends GPortugolBaseVisitor<Integer> {
         }
         return nodeNum;
     }
-
+    
     @Override
     public Integer visitVar_decl(GPortugolParser.Var_declContext ctx) {
         int nodeNum = createNode("var_decl");
@@ -90,14 +93,14 @@ public class VisitorArvore extends GPortugolBaseVisitor<Integer> {
         }
         return nodeNum;
     }
-
+    
     @Override
     public Integer visitTp_primitivo(GPortugolParser.Tp_primitivoContext ctx) {
         int nodeNum = createNode("tp_primitivo");
-        createNode(ctx.getText());
+        createChild(nodeNum, ctx.getText());
         return nodeNum;
     }
-
+    
     @Override
     public Integer visitTp_matriz(GPortugolParser.Tp_matrizContext ctx) {
         int nodeNum = createNode("tp_matriz");
@@ -109,14 +112,14 @@ public class VisitorArvore extends GPortugolBaseVisitor<Integer> {
         }
         return nodeNum;
     }
-
+    
     @Override
     public Integer visitTp_prim_pl(GPortugolParser.Tp_prim_plContext ctx) {
         int nodeNum = createNode("tp_prim_pl");
         createNode(ctx.getText());
         return nodeNum;
     }
-
+    
     @Override
     public Integer visitStm_block(GPortugolParser.Stm_blockContext ctx) {
         int nodeNum = createNode("stm_block");
@@ -127,14 +130,14 @@ public class VisitorArvore extends GPortugolBaseVisitor<Integer> {
         createChild(nodeNum, "fim");
         return nodeNum;
     }
-
+    
     @Override
     public Integer visitDefault_stm_list(GPortugolParser.Default_stm_listContext ctx) {
         int nodeNum = createNode("stm_list");
         visit(ctx.getChild(0));
         return nodeNum;
     }
-
+    
     @Override
     public Integer visitSemicolon_stm_list(GPortugolParser.Semicolon_stm_listContext ctx) {
         int nodeNum = createNode("stm_list");
@@ -142,7 +145,7 @@ public class VisitorArvore extends GPortugolBaseVisitor<Integer> {
         createChild(nodeNum, ";");
         return nodeNum;
     }
-
+    
     @Override
     public Integer visitStm_ret(GPortugolParser.Stm_retContext ctx) {
         int nodeNum = createNode("stm_ret");
@@ -151,7 +154,7 @@ public class VisitorArvore extends GPortugolBaseVisitor<Integer> {
         }
         return nodeNum;
     }
-
+    
     @Override
     public Integer visitLvalue(GPortugolParser.LvalueContext ctx) {
         int nodeNum = createNode("lvalue");
@@ -163,7 +166,7 @@ public class VisitorArvore extends GPortugolBaseVisitor<Integer> {
         }
         return nodeNum;
     }
-
+    
     @Override
     public Integer visitStm_attr(GPortugolParser.Stm_attrContext ctx) {
         int nodeNum = createNode("stm_attr");
@@ -173,7 +176,7 @@ public class VisitorArvore extends GPortugolBaseVisitor<Integer> {
         createChild(nodeNum, ";");
         return nodeNum;
     }
-
+    
     @Override
     public Integer visitStm_se(GPortugolParser.Stm_seContext ctx) {
         int nodeNum = createNode("stm_se");
@@ -207,13 +210,13 @@ public class VisitorArvore extends GPortugolBaseVisitor<Integer> {
             createChild(nodeNum, "senao");
             for (; stm_list_count < ctx.stm_list().size(); stm_list_count++) {
                 createChild(nodeNum, ctx.stm_list(stm_list_count));
-
+                
             }
         }
         createChild(nodeNum, "fim_se");
         return nodeNum;
     }
-
+    
     @Override
     public Integer visitStm_enquanto(GPortugolParser.Stm_enquantoContext ctx) {
         int nodeNum = createNode("stm_enquanto");
@@ -226,7 +229,7 @@ public class VisitorArvore extends GPortugolBaseVisitor<Integer> {
         createChild(nodeNum, "fim_enquanto");
         return nodeNum;
     }
-
+    
     @Override
     public Integer visitStm_para(GPortugolParser.Stm_paraContext ctx) {
         int nodeNum = createNode("stm_para");
@@ -246,7 +249,7 @@ public class VisitorArvore extends GPortugolBaseVisitor<Integer> {
         createChild(nodeNum, "fim_para");
         return nodeNum;
     }
-
+    
     @Override
     public Integer visitPasso(GPortugolParser.PassoContext ctx) {
         int nodeNum = createNode("passo");
@@ -257,7 +260,7 @@ public class VisitorArvore extends GPortugolBaseVisitor<Integer> {
         createChild(nodeNum, ctx.T_INT_LIT());
         return nodeNum;
     }
-
+    
     @Override
     public Integer visitExprComp(GPortugolParser.ExprCompContext ctx) {
         int nodeNum = createNode("exprComp");
@@ -266,7 +269,7 @@ public class VisitorArvore extends GPortugolBaseVisitor<Integer> {
         createChild(nodeNum, ctx.expr(1));
         return nodeNum;
     }
-
+    
     @Override
     public Integer visitExprBinaryOr(GPortugolParser.ExprBinaryOrContext ctx) {
         int nodeNum = createNode("exprBinaryOr");
@@ -275,7 +278,7 @@ public class VisitorArvore extends GPortugolBaseVisitor<Integer> {
         createChild(nodeNum, ctx.expr(1));
         return nodeNum;
     }
-
+    
     @Override
     public Integer visitExprAddSub(GPortugolParser.ExprAddSubContext ctx) {
         int nodeNum = createNode("exprAddSub");
@@ -284,7 +287,7 @@ public class VisitorArvore extends GPortugolBaseVisitor<Integer> {
         createChild(nodeNum, ctx.expr(1));
         return nodeNum;
     }
-
+    
     @Override
     public Integer visitExprTermo(GPortugolParser.ExprTermoContext ctx) {
         int nodeNum = createNode("exprTermo");
@@ -294,7 +297,7 @@ public class VisitorArvore extends GPortugolBaseVisitor<Integer> {
         createChild(nodeNum, ctx.termo());
         return nodeNum;
     }
-
+    
     @Override
     public Integer visitExprMultDiv(GPortugolParser.ExprMultDivContext ctx) {
         int nodeNum = createNode("exprMultDiv");
@@ -303,7 +306,7 @@ public class VisitorArvore extends GPortugolBaseVisitor<Integer> {
         createChild(nodeNum, ctx.expr(1));
         return nodeNum;
     }
-
+    
     @Override
     public Integer visitExprAtrrib(GPortugolParser.ExprAtrribContext ctx) {
         int nodeNum = createNode("exprAtrrib");
@@ -312,7 +315,7 @@ public class VisitorArvore extends GPortugolBaseVisitor<Integer> {
         createChild(nodeNum, ctx.expr(1));
         return nodeNum;
     }
-
+    
     @Override
     public Integer visitExprBinaryAnd(GPortugolParser.ExprBinaryAndContext ctx) {
         int nodeNum = createNode("exprBinaryAnd");
@@ -321,7 +324,7 @@ public class VisitorArvore extends GPortugolBaseVisitor<Integer> {
         createChild(nodeNum, ctx.expr(1));
         return nodeNum;
     }
-
+    
     @Override
     public Integer visitExprAnd(GPortugolParser.ExprAndContext ctx) {
         int nodeNum = createNode("exprAnd");
@@ -330,7 +333,7 @@ public class VisitorArvore extends GPortugolBaseVisitor<Integer> {
         createChild(nodeNum, ctx.expr(1));
         return nodeNum;
     }
-
+    
     @Override
     public Integer visitExprOr(GPortugolParser.ExprOrContext ctx) {
         int nodeNum = createNode("exprOr");
@@ -339,7 +342,7 @@ public class VisitorArvore extends GPortugolBaseVisitor<Integer> {
         createChild(nodeNum, ctx.expr(1));
         return nodeNum;
     }
-
+    
     @Override
     public Integer visitExprPow(GPortugolParser.ExprPowContext ctx) {
         int nodeNum = createNode("exprPow");
@@ -348,53 +351,104 @@ public class VisitorArvore extends GPortugolBaseVisitor<Integer> {
         createChild(nodeNum, ctx.expr(1));
         return nodeNum;
     }
-    /*
-
+    
     @Override
-    public Integer visitTermo(GPortugolParser.TermoContext ctx) {
+    public Integer visitDefault_termo(GPortugolParser.Default_termoContext ctx) {
         int nodeNum = createNode("termo");
+        createChild(nodeNum, ctx.getChild(0));
         return nodeNum;
     }
-
+    
+    @Override
+    public Integer visitParentesis_termo(GPortugolParser.Parentesis_termoContext ctx) {
+        int nodeNum = createNode("termo");
+        createChild(nodeNum, "(");
+        createChild(nodeNum, ctx.expr());
+        createChild(nodeNum, ")");
+        return nodeNum;
+    }
+    
     @Override
     public Integer visitFcall(GPortugolParser.FcallContext ctx) {
         int nodeNum = createNode("fcall");
+        createChild(nodeNum, ctx.T_IDENTIFICADOR());
+        createChild(nodeNum, "(");
+        if (ctx.fargs() != null) {
+            createChild(nodeNum, ctx.fargs());
+        }
+        createChild(nodeNum, ")");
+        
         return nodeNum;
     }
-
+    
     @Override
     public Integer visitFargs(GPortugolParser.FargsContext ctx) {
         int nodeNum = createNode("fargs");
+        createChild(nodeNum, ctx.expr(0));
+        for (int j = 1; j < ctx.expr().size(); j++) {
+            createChild(nodeNum, ctx.expr(j));
+        }
         return nodeNum;
     }
 
-    @Override
-    public Integer visitLiteral(GPortugolParser.LiteralContext ctx) {
-        int nodeNum = createNode("literal");
-        return nodeNum;
-    }
+     @Override
+     public Integer visitLiteral(GPortugolParser.LiteralContext ctx) {
+     int nodeNum = createNode("literal");
+         createChild(nodeNum, ctx.getChild(0));
+     return nodeNum;
+     }
 
-    @Override
-    public Integer visitFunc_decls(GPortugolParser.Func_declsContext ctx) {
-        int nodeNum = createNode("func_decls");
-        return nodeNum;
-    }
+     @Override
+     public Integer visitFunc_decls(GPortugolParser.Func_declsContext ctx) {
+     int nodeNum = createNode("func_decls");
+         createChild(nodeNum, "funcao");
+         createChild(nodeNum, ctx.T_IDENTIFICADOR());
+                 createChild(nodeNum, "(");
+                 if(ctx.fparams() != null){
+                     createChild(nodeNum, ctx.fparams());
+                 }
+        createChild(nodeNum, ")");
+        if(ctx.tp_primitivo() != null){
+            createChild(nodeNum, ":");
+            createChild(nodeNum, ctx.tp_primitivo());
+        }
+         createChild(nodeNum, ctx.fvar_decl());
+         createChild(nodeNum, ctx.stm_block());
 
-    @Override
-    public Integer visitFvar_decl(GPortugolParser.Fvar_declContext ctx) {
-        int nodeNum = createNode("fvar_decl");
-        return nodeNum;
-    }
+     return nodeNum;
+     }
 
-    @Override
-    public Integer visitFparams(GPortugolParser.FparamsContext ctx) {
-        int nodeNum = createNode("fparams");
-        return nodeNum;
-    }
+     @Override
+     public Integer visitFvar_decl(GPortugolParser.Fvar_declContext ctx) {
+     int nodeNum = createNode("fvar_decl");
+     for(ParserRuleContext var_decl : ctx.var_decl()){
+         createChild(nodeNum, var_decl);
+         createChild(nodeNum, ";");
+     }
+     return nodeNum;
+     }
 
-    @Override
-    public Integer visitFparam(GPortugolParser.FparamContext ctx) {
-        int nodeNum = createNode("fparam");
-        return nodeNum;
-    }*/
+     @Override
+     public Integer visitFparams(GPortugolParser.FparamsContext ctx) {
+     int nodeNum = createNode("fparams");
+         createChild(nodeNum, ctx.fparam(0));
+         for (int j = 1; j < ctx.fparam().size(); j++) {
+             createChild(nodeNum, ",");
+             createChild(nodeNum, ctx.fparam(j));
+         }
+     return nodeNum;
+     }
+
+     @Override
+     public Integer visitFparam(GPortugolParser.FparamContext ctx) {
+     int nodeNum = createNode("fparam");
+         createChild(nodeNum, ctx.T_IDENTIFICADOR());
+         createChild(nodeNum, ":");
+         if(ctx.tp_primitivo() != null){
+             createChild(nodeNum, ctx.tp_primitivo());
+         }else{
+             createChild(nodeNum, ctx.tp_matriz());
+         }
+     return nodeNum;
+     }
 }
