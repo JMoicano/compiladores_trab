@@ -12,9 +12,9 @@ var_decl_block		:	'variaveis' (var_decl ';')+ 'fim_variaveis'
 var_decl			:	T_IDENTIFICADOR (',' T_IDENTIFICADOR)* ':' (tp_primitivo | tp_matriz)
 					;
 
-tp_primitivo		:				'inteiro'
+tp_primitivo		:	'inteiro'
 					| 	'real'
-					|   	'caractere'
+					|	'caractere'
 					|	'literal'
 					|	'logico'
 					;
@@ -22,7 +22,7 @@ tp_primitivo		:				'inteiro'
 tp_matriz			:	'matriz' ('[' T_INT_LIT ']')+ 'de' tp_prim_pl
 					;
 
-tp_prim_pl			:			'inteiros'
+tp_prim_pl			:	'inteiros'
 					|	'reais'
 					|	'caracteres'
 					|	'literais'
@@ -32,12 +32,12 @@ tp_prim_pl			:			'inteiros'
 stm_block			:	'inicio' (stm_list)* 'fim'
 					;
 
-stm_list			:	stm_attr
-					|	fcall ';'
-					|	stm_ret
-					|	stm_se
-					|	stm_enquanto
-					|	stm_para
+stm_list			:	stm_attr		#default_stm_list
+					|	fcall ';'		#semicolon_stm_list
+					|	stm_ret			#default_stm_list
+					|	stm_se			#default_stm_list
+					|	stm_enquanto	#default_stm_list
+					|	stm_para		#default_stm_list
 					;
 stm_ret				:	'retorne' expr? ';'
 					;
@@ -56,7 +56,7 @@ stm_enquanto		:	'enquanto' expr 'faca' stm_list+ 'fim_enquanto'
 stm_para			:	'para' lvalue 'de' expr 'ate' expr passo? 'faca' stm_list+ 'fim_para'
 					;
 
-passo				:	'passo' ('+'|'-')? T_INT_LIT
+passo				:	'passo' op=('+'|'-')? T_INT_LIT
 					;
 
 expr				:	expr op=('ou'|'||') expr                   #ExprOr
@@ -71,10 +71,10 @@ expr				:	expr op=('ou'|'||') expr                   #ExprOr
 					|	op=('+'|'-'|'~'|'nao')? termo      #ExprTermo
 					;
 
-termo				:	fcall
-					|	lvalue
-					|	literal
-					|	'(' expr ')'
+termo				:	fcall			#default_termo
+					|	lvalue			#default_termo
+					|	literal			#default_termo
+					|	'(' expr ')'	#parentesis_termo
 					;
 					
 fcall				:	T_IDENTIFICADOR '(' fargs? ')';

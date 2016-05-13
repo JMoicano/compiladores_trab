@@ -19,7 +19,7 @@ public class GeradorArvore {
         System.out.println("digraph {\n" +
                             "graph [ordering=\"out\"];");
         
-        GPortugolBaseVisitor visitor = new GPortugolBaseVisitor();
+        VisitorArvore visitor = new VisitorArvore();
         visitor.visit(tree);
         
         System.out.println("}");

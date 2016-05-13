@@ -5,7 +5,8 @@
 //essa puta vagabunda mais parecida com a medusa
  
 algoritmo teste;
+variaveis
+abc, def : inteiro;
+fim_variaveis
 inicio
-	x := 42 + 3;
-	f := 0 <= 1;
 fim
