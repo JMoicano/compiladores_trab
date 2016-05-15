@@ -124,4 +124,4 @@ ML_COMMENT				:	'/*'.*?'*/' -> skip;
 
 T_IDENTIFICADOR			:	[a-zA-Z'_'][a-zA-Z0-9'_']*;
 
-WS     : [' '\t\r\n] -> skip ;
+WS     : [' ''\t''\r''\n'] -> skip ;
