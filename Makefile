@@ -1,4 +1,5 @@
-ANTLR = -Xmx500M -cp "/usr/local/lib/antlr-4.5-complete.jar:$CLASSPATH" org.antlr.v4.Tool
+LIB = /usr/local/lib/
+ANTLR = -Xmx500M -cp $(LIB)antlr-4.5-complete.jar:$CLASSPATH org.antlr.v4.Tool
 
 all: compile
 

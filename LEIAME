@@ -1,0 +1,10 @@
+PARA COMPILAR:
+- Ter antlr-4.5-complete.jar na pasta /usr/local/lib/ (ou mudar o endereço da variável LIB no Makefile)
+- Rodar o comando: "make"
+
+PARA RODAR:
+- Rodar o comando: "java Trab2 <ARQUIVO DE ENTRADA.gpt> <ARQUIVO DE SAIDA.dot>""
+- Rodar o comando: "dot -Tpdf <ARQUIVO DE SAIDA.dot> -o <ARQUIVO.pdf>"
+
+PARA LIMPAR:
+- Rodar o comando: "make clean" **ATENÇÃO, APAGA OS ARQUIVOS .dot E .pdf**
