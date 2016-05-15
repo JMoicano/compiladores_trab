@@ -105,8 +105,8 @@ fparam 				:	T_IDENTIFICADOR ':' (tp_primitivo | tp_matriz)
 fragment CR				:	'\r';
 fragment LF				:	'\n';
 
-fragment T_OCTAL_LIT	:	'0'('c'|'C')[0-8]+;
-fragment T_HEX_LIT		:	'0'('x'|'X')[0-9'a'-'f''A'-'F']+;
+fragment T_OCTAL_LIT	:	'0'('c'|'C')[0-7]+;
+fragment T_HEX_LIT		:	'0'('x'|'X')[0-9a-fA-F]+;
 fragment T_BIN_LIT		:	'0'('b'|'B')[01]+;
 fragment T_DEC_LIT		:	[0-9]+;
 
@@ -116,7 +116,7 @@ T_INT_LIT				:	T_OCTAL_LIT|T_HEX_LIT|T_BIN_LIT|T_DEC_LIT;
 T_KW_VERDADEIRO         :   'verdadeiro';
 T_KW_FALSO              :   'falso';
 
-T_CARAC_LIT				:	'\''(~('\''|'\\')|'\\'.)?'\'';
+T_CARAC_LIT				:	'\''(~['\'''\\']|'\\'.)?'\'';
 T_STRING_LIT			:	'"'(~('"'|'\\'|'\r'|'\n')|'\\'.)*'"';
 
 SL_COMMENT				:	'//' .*? (LF|EOF) -> skip;
@@ -124,4 +124,4 @@ ML_COMMENT				:	'/*'.*?'*/' -> skip;
 
 T_IDENTIFICADOR			:	[a-zA-Z'_'][a-zA-Z0-9'_']*;
 
-WS     : [' '\t\r\n]+ -> skip ;
+WS     : [' '\t\r\n] -> skip ;
