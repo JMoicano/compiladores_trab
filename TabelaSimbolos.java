@@ -1,4 +1,3 @@
-
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -6,7 +5,7 @@ public class TabelaSimbolos<T> {
 
     private final HashMap<Integer, LinkedList<T>> tabela;
     private int contagem = 0;
-    private int tamanho;
+    private final int tamanho;
 
     public TabelaSimbolos() {
         this.tamanho = 4039;
@@ -14,15 +13,19 @@ public class TabelaSimbolos<T> {
     }
 
     private int hash(String palavra) {
-        return palavra.toLowerCase().charAt(0) % 26;
+        return palavra.toLowerCase().charAt(0) % tamanho;
     }
 
     public void add(T s) {
-        if (!this.lookUp(s)) {
+        if (!this.lookUp(s.toString())) {
             int indice = this.hash(s.toString());
             LinkedList<T> lista = this.tabela.get(indice);
             if (lista == null) {
                 lista = new LinkedList<>();
+            }else{
+                if(lista.contains(s)){
+                    //TODO:RETORNAR ERRO PQ JÁ EXISTE
+                }
             }
             lista.add(s);
             this.contagem++;
@@ -30,7 +33,7 @@ public class TabelaSimbolos<T> {
     }
 
     public void remove(T s) {
-        if (this.lookUp(s)) {
+        if (this.lookUp(s.toString())) {
             int indice = this.hash(s.toString());
             LinkedList<T> lista = this.tabela.get(indice);
             lista.remove(s);
@@ -38,8 +41,8 @@ public class TabelaSimbolos<T> {
         }
     }
 
-    public boolean lookUp(T s) {
-        int indice = this.hash(s.toString());
+    public boolean lookUp(String s) {
+        int indice = this.hash(s);
         LinkedList<T> lista = this.tabela.get(indice);
         if (lista == null) {
             return false;

@@ -1,4 +1,4 @@
-
+import java.util.LinkedList;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -10,6 +10,9 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 public class VisitorArvore extends GPortugolBaseVisitor<Integer> {
 
     private static int nodeCount;
+    private static TabelaSimbolos<Variavel> tabelaVariaveis;
+    private static TabelaSimbolos<Funcao> tabelaFuncoes;
+    private static LinkedList<Funcao> funcoesUsadas;
 
     private int createNode(String label) {
         System.out.println("node" + nodeCount + "[label=\"" + label + "\"];");
@@ -38,9 +41,26 @@ public class VisitorArvore extends GPortugolBaseVisitor<Integer> {
         createChild(p, c.getText());
     }
 
+    private TpPrimitivo translateTipo(String entrada){
+        switch(entrada){
+            case "inteiro":
+                return TpPrimitivo.INTEIRO;
+            case "real":
+                return TpPrimitivo.REAL;
+            case "caractere":
+                return TpPrimitivo.CARACTERE;
+            case "literal":
+                return TpPrimitivo.LITERAL;
+            case "logico":
+                return TpPrimitivo.LOGICO;
+        }
+        return TpPrimitivo.INTEIRO;
+    }
+    
     @Override
     public Integer visitAlgoritmo(GPortugolParser.AlgoritmoContext ctx) {
         nodeCount = 0;
+        tabelaVariaveis = new TabelaSimbolos<>();
         int nodeNum = createNode("algoritmo_goal");
         createChild(nodeNum, ctx.declaracao_algoritmo());
         if (ctx.var_decl_block() != null) {
@@ -50,6 +70,7 @@ public class VisitorArvore extends GPortugolBaseVisitor<Integer> {
         for (ParserRuleContext func_decls : ctx.func_decls()) {
             createChild(nodeNum, func_decls);
         }
+        //TODO: VERIFICAR SE TODAS AS FUNCOES EM FUNCOESLIDAS ESTAO CORRETAS COM O TABELAFUNCOES
         return nodeNum;
     }
 
@@ -77,16 +98,25 @@ public class VisitorArvore extends GPortugolBaseVisitor<Integer> {
     @Override
     public Integer visitVar_decl(GPortugolParser.Var_declContext ctx) {
         int nodeNum = createNode("var_decl");
+        LinkedList<String> identificadores = new LinkedList<>();
         createChild(nodeNum, ctx.T_IDENTIFICADOR(0));
+        identificadores.add(ctx.T_IDENTIFICADOR(0).getText());
         for (int j = 1; j < ctx.T_IDENTIFICADOR().size(); j++) {
             createChild(nodeNum, ",");
             createChild(nodeNum, ctx.T_IDENTIFICADOR(j));
+            identificadores.add(ctx.T_IDENTIFICADOR(j).getText());
         }
         createChild(nodeNum, ":");
+        TpPrimitivo tipo = null;
         if (ctx.tp_primitivo() != null) {
             createChild(nodeNum, ctx.tp_primitivo());
+            tipo = translateTipo(ctx.tp_primitivo().getText());
         } else {
             createChild(nodeNum, ctx.tp_matriz());
+        }
+        for (String identificadore : identificadores) {
+            Variavel v = new Variavel(identificadore, tipo, nodeNum); //TODO: PEGAR NUMERO DA LINHA
+            tabelaVariaveis.add(v);
         }
         return nodeNum;
     }
@@ -159,6 +189,7 @@ public class VisitorArvore extends GPortugolBaseVisitor<Integer> {
     public Integer visitLvalue(GPortugolParser.LvalueContext ctx) {
         int nodeNum = createNode("lvalue");
         createChild(nodeNum, ctx.T_IDENTIFICADOR());
+        tabelaVariaveis.lookUp(ctx.T_IDENTIFICADOR().toString()); //TODO: TRATAR O LOOKUP (VER SE A VARIAVEL USADA FOI DECLARADA)
         for (ParserRuleContext expr : ctx.expr()) {
             createChild(nodeNum, "[");
             createChild(nodeNum, expr);
@@ -174,6 +205,7 @@ public class VisitorArvore extends GPortugolBaseVisitor<Integer> {
         createChild(nodeNum, ":=");
         createChild(nodeNum, ctx.expr());
         createChild(nodeNum, ";");
+        //TODO: VERIFICAR TIPO
         return nodeNum;
     }
 
@@ -339,12 +371,18 @@ public class VisitorArvore extends GPortugolBaseVisitor<Integer> {
     public Integer visitFcall(GPortugolParser.FcallContext ctx) {
         int nodeNum = createNode("fcall");
         createChild(nodeNum, ctx.T_IDENTIFICADOR());
+        String nome = ctx.T_IDENTIFICADOR().getText();
         createChild(nodeNum, "(");
+        LinkedList<TpPrimitivo> tipos = new LinkedList<>();
         if (ctx.fargs() != null) {
             createChild(nodeNum, ctx.fargs());
+            tipos.add(translateTipo(nome)); //TODO: AJEITAR PRA VISITAR O FARGS E RETORNAR OS TIPOS
         }
         createChild(nodeNum, ")");
 
+        Funcao f = new Funcao(nome, tipos, nodeNum); //TODO: NUMERO DA LINHA
+        funcoesUsadas.add(f);
+        
         return nodeNum;
     }
 
@@ -383,17 +421,22 @@ public class VisitorArvore extends GPortugolBaseVisitor<Integer> {
         int nodeNum = createNode("func_decls");
         createChild(nodeNum, "funcao");
         createChild(nodeNum, ctx.T_IDENTIFICADOR());
+        String nome = ctx.T_IDENTIFICADOR().getText();
         createChild(nodeNum, "(");
+        LinkedList<TpPrimitivo> params = new LinkedList<>();
         if (ctx.fparams() != null) {
             createChild(nodeNum, ctx.fparams());
+            params.add(translateTipo(nome)); //TODO: AJEITAR PRA VISITAR O FPARAMS E RETORNAR OS TIPOS
         }
         createChild(nodeNum, ")");
+        Funcao f = new Funcao(nome, params, nodeNum); //TODO: NUMERO DA LINHA
         if (ctx.tp_primitivo() != null) {
             createChild(nodeNum, ":");
             createChild(nodeNum, ctx.tp_primitivo());
+            f.setRetorno(translateTipo(ctx.tp_primitivo().getText()));
         }
         if (ctx.fvar_decl().getChildCount() > 0) {
-            createChild(nodeNum, ctx.fvar_decl());
+            createChild(nodeNum, ctx.fvar_decl()); //TODO: DAR UM JEITO DE CRIAR UMA TABELA DE VARIAVEIS QUE SOH VALHA PRO STM_BLOCK DAQUI
         }
         createChild(nodeNum, ctx.stm_block());
 
