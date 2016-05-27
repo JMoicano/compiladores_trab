@@ -1,26 +1,25 @@
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-public class TabelaHash<T> {
+public class TabelaSimbolos<T> {
 
     private final HashMap<Integer, LinkedList<T>> tabela;
     private int contagem = 0;
     private int tamanho;
 
-    public TabelaHash() {
+    public TabelaSimbolos() {
         this.tamanho = 4039;
         this.tabela = new HashMap<>();
     }
 
-    private int calculaIndiceDaTabela(String palavra) {
+    private int hash(String palavra) {
         return palavra.toLowerCase().charAt(0) % 26;
     }
 
-    public void adiciona(T s) {
-        if (!this.contem(s)) {
-            int indice = this.calculaIndiceDaTabela(s.toString());
+    public void add(T s) {
+        if (!this.lookUp(s)) {
+            int indice = this.hash(s.toString());
             LinkedList<T> lista = this.tabela.get(indice);
             if (lista == null) {
                 lista = new LinkedList<>();
@@ -31,16 +30,16 @@ public class TabelaHash<T> {
     }
 
     public void remove(T s) {
-        if (this.contem(s)) {
-            int indice = this.calculaIndiceDaTabela(s.toString());
+        if (this.lookUp(s)) {
+            int indice = this.hash(s.toString());
             LinkedList<T> lista = this.tabela.get(indice);
             lista.remove(s);
             this.contagem--;
         }
     }
 
-    public boolean contem(T s) {
-        int indice = this.calculaIndiceDaTabela(s.toString());
+    public boolean lookUp(T s) {
+        int indice = this.hash(s.toString());
         LinkedList<T> lista = this.tabela.get(indice);
         if (lista == null) {
             return false;

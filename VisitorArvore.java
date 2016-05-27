@@ -3,11 +3,6 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 /**
  *
  * @author jsilva
@@ -185,59 +180,20 @@ public class VisitorArvore extends GPortugolBaseVisitor<Integer> {
     @Override
     public Integer visitStm_se(GPortugolParser.Stm_seContext ctx) {
         int nodeNum = createNode("stm_se");
-        int entao_count = 0, senao_count = 0;
-        boolean entao = false;
-        boolean senao = false;
-        for (ParseTree aux : ctx.children) {
-            if (entao) {
-                entao_count++;
-            } else if (senao) {
-                senao_count++;
-            }
-            switch (aux.getText()) {
-                case "entao":
-                    entao = true;
-                    break;
-                case "senao":
-                    entao = false;
-                    senao = true;
-                    break;
-                case "fim_se":
-                    senao = false;
-                    entao = false;
-                    break;
-                default:
-                    break;
-            }
-        }
         createChild(nodeNum, "se");
         createChild(nodeNum, ctx.expr());
         createChild(nodeNum, "entao");
-        int stm_list_count;
-        for (stm_list_count = 0; stm_list_count < entao_count - 1; stm_list_count++) {
-            createChild(nodeNum, ctx.stm_list(stm_list_count));
+        for (ParserRuleContext stm_list : ctx.true_block().stm_list()) {
+            createChild(nodeNum, stm_list);
         }
-        if (senao_count > 0) {
+        if (ctx.false_block() != null) {
             createChild(nodeNum, "senao");
-            for (; stm_list_count < ctx.stm_list().size(); stm_list_count++) {
-                createChild(nodeNum, ctx.stm_list(stm_list_count));
-
+            for (ParserRuleContext stm_list : ctx.false_block().stm_list()) {
+                createChild(nodeNum, stm_list);
             }
         }
         createChild(nodeNum, "fim_se");
-        return nodeNum;
-    }
 
-    @Override
-    public Integer visitStm_enquanto(GPortugolParser.Stm_enquantoContext ctx) {
-        int nodeNum = createNode("stm_enquanto");
-        createChild(nodeNum, "enquanto");
-        createChild(nodeNum, ctx.expr());
-        createChild(nodeNum, "faca");
-        for (ParserRuleContext stm_list : ctx.stm_list()) {
-            createChild(nodeNum, stm_list);
-        }
-        createChild(nodeNum, "fim_enquanto");
         return nodeNum;
     }
 

@@ -47,7 +47,10 @@ lvalue				:	T_IDENTIFICADOR ('[' expr ']')*;
 stm_attr			:	lvalue ':=' expr ';'
 					;
 
-stm_se				:	'se' expr 'entao' stm_list+ ('senao' stm_list+)? 'fim_se'
+true_block : stm_list+ ;
+false_block : stm_list+ ;
+
+stm_se				:	'se' expr 'entao' true_block ('senao' false_block)? 'fim_se'
 					;
 
 stm_enquanto		:	'enquanto' expr 'faca' stm_list+ 'fim_enquanto'
