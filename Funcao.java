@@ -39,4 +39,8 @@ public class Funcao {
         hash = 97 * hash + Objects.hashCode(this.nome);
         return hash;
     }
+
+    public int getLinha() {
+        return this.linha;
+    }
 }

@@ -12,6 +12,7 @@ public class Variavel {
         this.tipo = tp;
         this.linha = linha;
     }
+    
     public int getLinha() {
         return linha;
     }

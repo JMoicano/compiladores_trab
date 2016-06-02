@@ -28,7 +28,7 @@ public class Trab2 {
         System.out.println("digraph {\n" +
                             "graph [ordering=\"out\"];");
         
-        VisitorArvore visitor = new VisitorArvore();
+        VisitorSemantico visitor = new VisitorSemantico();
         visitor.visit(tree);
         
         System.out.println("}");
