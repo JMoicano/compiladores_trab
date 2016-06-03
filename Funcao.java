@@ -10,17 +10,23 @@ public class Funcao {
     private final String nome;
     private final int linha;
     private TpPrimitivo retorno;
-    private final LinkedList<TpPrimitivo> argumentos;
-    private final int aridade;
+    private final LinkedList<TpPrimitivo> parametros;
     
     public Funcao(String nome, LinkedList<TpPrimitivo> argumentos, int linha){
         this.nome = nome;
         this.linha = linha;
-        this.argumentos = new LinkedList<>();
+        this.parametros = new LinkedList<>();
         for (TpPrimitivo argumento : argumentos) {
-            this.argumentos.add(argumento);
+            this.parametros.add(argumento);
         }
-        aridade = this.argumentos.size();
+    }
+    
+    public String getNome(){
+        return this.nome;
+    }
+    
+    public int getAridade(){
+        return parametros.size();
     }
     
     public void setRetorno(TpPrimitivo retorno){

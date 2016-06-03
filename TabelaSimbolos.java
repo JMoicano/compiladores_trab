@@ -13,21 +13,9 @@ public class TabelaSimbolos<T> {
         this.tabela = new HashMap<>();
     }
 
-    private int hash(String palavra) {
-        int s1 = 1;
-        int s2 = 0;
-
-        for (int i = 0; i < palavra.length(); i++) {
-            s1 = (s1 + palavra.charAt(i)) % 65521;
-            s2 = (s1 + s2) % 65521;
-        }
-
-        return ((s2 << 16) | s1) % tamanho;
-    }
-
     public boolean add(T s) {
-        if (!this.lookUp(s.toString())) {
-            int indice = this.hash(s.toString());
+        if (!this.lookUp(s)) {
+            int indice = s.hashCode();
             LinkedList<T> lista = this.tabela.get(indice);
             if (lista == null) {
                 lista = new LinkedList<>();
@@ -42,17 +30,27 @@ public class TabelaSimbolos<T> {
         return true;
     }
 
+    public T get(T s){
+        int indice = s.hashCode();
+        for (T obj : tabela.get(indice)) {
+            if(obj.equals(s)){
+                return obj;
+            }
+        }
+        return null;
+    }
+    
     public void remove(T s) {
-        if (this.lookUp(s.toString())) {
-            int indice = this.hash(s.toString());
+        if (this.lookUp(s)) {
+            int indice = s.hashCode();
             LinkedList<T> lista = this.tabela.get(indice);
             lista.remove(s);
             this.contagem--;
         }
     }
 
-    public boolean lookUp(String s) {
-        int indice = this.hash(s);
+    public boolean lookUp(T s) {
+        int indice = s.hashCode();
         LinkedList<T> lista = this.tabela.get(indice);
         if (lista == null) {
             return false;
@@ -60,7 +58,7 @@ public class TabelaSimbolos<T> {
 
         return lista.contains(s);
     }
-
+    
     public LinkedList<T> pegaTodos() {
         LinkedList<T> symbollist = new LinkedList<>();
 

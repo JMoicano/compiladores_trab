@@ -9,10 +9,10 @@ import org.antlr.v4.runtime.tree.TerminalNode;
  */
 public class VisitorSemantico extends GPortugolBaseVisitor<TpPrimitivo> {
 
-    private static int nodeCount;
     private static TabelaSimbolos<Variavel> tabelaVariaveis;
     private static TabelaSimbolos<Funcao> tabelaFuncoes;
     private static LinkedList<Funcao> funcoesUsadas;
+    ErrorHandler handler;
 
     private TpPrimitivo translateTipo(String entrada) {
         switch (entrada) {
@@ -31,111 +31,85 @@ public class VisitorSemantico extends GPortugolBaseVisitor<TpPrimitivo> {
         }
     }
 
-    @Override
-    public TpPrimitivo visitAlgoritmo(GPortugolParser.AlgoritmoContext ctx) {
-        tabelaVariaveis = new TabelaSimbolos<>();
-//        createChild(nodeNum, ctx.declaracao_algoritmo());
-        if (ctx.var_decl_block() != null) {
-//            createChild(nodeNum, ctx.var_decl_block());
+    private void verificaFuncao(Funcao funcaoUsada, Funcao funcaoDeclarada) {
+        if (funcaoDeclarada == null) {
+            handler.instantiateErro(funcaoUsada);
         }
-//        createChild(nodeNum, ctx.stm_block());
-        for (ParserRuleContext func_decls : ctx.func_decls()) {
-//            createChild(nodeNum, func_decls);
+        int parametros = funcaoDeclarada.getAridade();
+        int argumentos = funcaoUsada.getAridade();
+        if (parametros != argumentos) {
+            handler.instantiateErro(funcaoUsada, argumentos, parametros);
         }
-        //TODO: VERIFICAR SE TODAS AS FUNCOES EM FUNCOESLIDAS ESTAO CORRETAS COM O TABELAFUNCOES
-        return TpPrimitivo.INDEFINIDO;
+        //TODO: VER TIPOS NOS ARGUMENTOS
     }
 
     @Override
-    public TpPrimitivo visitDeclaracao_algoritmo(GPortugolParser.Declaracao_algoritmoContext ctx) {
-//        createChild(nodeNum, ctx.T_IDENTIFICADOR());
+    public TpPrimitivo visitAlgoritmo(GPortugolParser.AlgoritmoContext ctx) {
+        tabelaVariaveis = new TabelaSimbolos<>();
+        visit(ctx.declaracao_algoritmo());
+        if (ctx.var_decl_block() != null) {
+            visit(ctx.var_decl_block());
+        }
+        visit(ctx.stm_block());
+        for (ParserRuleContext func_decls : ctx.func_decls()) {
+            visit(func_decls);
+        }
+        for (Funcao funcaoUsada : funcoesUsadas) {
+            Funcao funcaoDeclarada = tabelaFuncoes.get(funcaoUsada);
+            verificaFuncao(funcaoUsada, funcaoDeclarada);
+        }
         return TpPrimitivo.INDEFINIDO;
     }
 
     @Override
     public TpPrimitivo visitVar_decl_block(GPortugolParser.Var_decl_blockContext ctx) {
         for (ParserRuleContext var_decl : ctx.var_decl()) {
-//            createChild(nodeNum, var_decl);
-//            createChild(nodeNum, ";");
+            visit(var_decl);
         }
-//        createChild(nodeNum, "fim_variaveis");
         return TpPrimitivo.INDEFINIDO;
     }
 
     @Override
     public TpPrimitivo visitVar_decl(GPortugolParser.Var_declContext ctx) {
         LinkedList<String> identificadores = new LinkedList<>();
-//        createChild(nodeNum, ctx.T_IDENTIFICADOR(0));
         identificadores.add(ctx.T_IDENTIFICADOR(0).getText());
         for (int j = 1; j < ctx.T_IDENTIFICADOR().size(); j++) {
-//            createChild(nodeNum, ",");
-//            createChild(nodeNum, ctx.T_IDENTIFICADOR(j));
             identificadores.add(ctx.T_IDENTIFICADOR(j).getText());
         }
-//        createChild(nodeNum, ":");
-        TpPrimitivo tipo = null;
-        if (ctx.tp_primitivo() != null) {
-//            createChild(nodeNum, ctx.tp_primitivo());
-            tipo = translateTipo(ctx.tp_primitivo().getText());
-        } else {
-//            createChild(nodeNum, ctx.tp_matriz());
-        }
+        TpPrimitivo tipo;
+        tipo = translateTipo(ctx.tp_primitivo().getText()); //ESTOU CONSIDERANDO O NAO USO DE MATRIZES
         int lineNum = ctx.getStart().getLine();
-        for (String identificadore : identificadores) {
-            Variavel v = new Variavel(identificadore, tipo, lineNum);
+        for (String identificador : identificadores) {
+            Variavel v = new Variavel(identificador, tipo, lineNum);
             tabelaVariaveis.add(v);
         }
         return tipo;
     }
 
     @Override
-    public TpPrimitivo visitTp_primitivo(GPortugolParser.Tp_primitivoContext ctx) {
-//        createChild(nodeNum, ctx.getText());
-        return nodeNum;
-    }
-
-    @Override
-    public TpPrimitivo visitTp_matriz(GPortugolParser.Tp_matrizContext ctx) {
-//        createChild(nodeNum, "matriz");
-        for (TerminalNode int_lit : ctx.T_INT_LIT()) {
-//            createChild(nodeNum, int_lit);
-        }
-//        createChild(nodeNum, ctx.tp_prim_pl());
-        return nodeNum;
-    }
-
-    @Override
-    public TpPrimitivo visitTp_prim_pl(GPortugolParser.Tp_prim_plContext ctx) {
-//        createChild(nodeNum, ctx.getText());
-        return nodeNum;
-    }
-
-    @Override
     public TpPrimitivo visitStm_block(GPortugolParser.Stm_blockContext ctx) {
         for (ParserRuleContext child : ctx.stm_list()) {
-//            createChild(nodeNum, child);
+            visit(child);
         }
-        return nodeNum;
+        return TpPrimitivo.INDEFINIDO;
     }
 
     @Override
     public TpPrimitivo visitDefault_stm_list(GPortugolParser.Default_stm_listContext ctx) {
-//        createChild(nodeNum, ctx.getChild(0));
-        return nodeNum;
+        return visit(ctx.getChild(0));
     }
 
     @Override
     public TpPrimitivo visitSemicolon_stm_list(GPortugolParser.Semicolon_stm_listContext ctx) {
-//        createChild(nodeNum, ctx.getChild(0));
-        return nodeNum;
+        return visit(ctx.getChild(0));
     }
 
     @Override
     public TpPrimitivo visitStm_ret(GPortugolParser.Stm_retContext ctx) {
         if (ctx.expr() != null) {
-//            createChild(nodeNum, ctx.expr());
+            return visit(ctx.expr());
         }
-        return nodeNum;
+        return TpPrimitivo.INDEFINIDO;
     }
 
     @Override
