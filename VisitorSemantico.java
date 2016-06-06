@@ -31,6 +31,15 @@ public class VisitorSemantico extends GPortugolBaseVisitor<TpPrimitivo> {
         }
     }
 
+    private TpPrimitivo tabAttr(TpPrimitivo t1, TpPrimitivo t2) {
+        if (t1 == t2) {
+            return t1;
+        } else if (t1 == TpPrimitivo.REAL && t2 == TpPrimitivo.INTEIRO) {
+            return TpPrimitivo.REAL;
+        }
+        return TpPrimitivo.INDEFINIDO;
+    }
+
     private void verificaFuncao(Funcao funcaoUsada, Funcao funcaoDeclarada) {
         if (funcaoDeclarada == null) {
             handler.instantiateErro(funcaoUsada);
@@ -41,6 +50,10 @@ public class VisitorSemantico extends GPortugolBaseVisitor<TpPrimitivo> {
             handler.instantiateErro(funcaoUsada, argumentos, parametros);
         }
         //TODO: VER TIPOS NOS ARGUMENTOS
+    }
+
+    private boolean verificaVariavel(Variavel a) {
+        return tabelaVariaveis.lookUp(a);
     }
 
     @Override
@@ -115,77 +128,64 @@ public class VisitorSemantico extends GPortugolBaseVisitor<TpPrimitivo> {
     @Override
     public TpPrimitivo visitLvalue(GPortugolParser.LvalueContext ctx) {
 //        createChild(nodeNum, ctx.T_IDENTIFICADOR());
-        boolean existe = tabelaVariaveis.lookUp(ctx.T_IDENTIFICADOR().toString());
-        for (ParserRuleContext expr : ctx.expr()) {
-            createChild(nodeNum, "[");
-            createChild(nodeNum, expr);
-            createChild(nodeNum, "]");
+        int linha = ctx.start.getLine();
+        Variavel v = new Variavel(ctx.T_IDENTIFICADOR().getText(), TpPrimitivo.INDEFINIDO, linha);
+        boolean existe = verificaVariavel(v);
+//        for (ParserRuleContext expr : ctx.expr()) {
+//            createChild(nodeNum, "[");
+//            createChild(nodeNum, expr);
+//            createChild(nodeNum, "]");
+//        }
+        if (!existe) {
+            handler.instantiateErro(v);
         }
-        return nodeNum;
+        return tabelaVariaveis.get(v).getTipo();
     }
 
     @Override
     public TpPrimitivo visitStm_attr(GPortugolParser.Stm_attrContext ctx) {
-        int nodeNum = createNode("stm_attr");
-        createChild(nodeNum, ctx.lvalue());
-        createChild(nodeNum, ":=");
-        createChild(nodeNum, ctx.expr());
-        createChild(nodeNum, ";");
-        //TODO: VERIFICAR TIPO
-        return nodeNum;
+        TpPrimitivo tpLvalue = visit(ctx.lvalue());
+        TpPrimitivo tpExpr = visit(ctx.expr());
+        TpPrimitivo result = tabAttr(tpLvalue, tpExpr);
+        int linha = ctx.start.getLine();
+        if (result == TpPrimitivo.INDEFINIDO) {
+            handler.instantiateErro(linha);
+        }
+        return result;
     }
 
-    @Override
-    public TpPrimitivo visitStm_se(GPortugolParser.Stm_seContext ctx) {
-        int nodeNum = createNode("stm_se");
-        createChild(nodeNum, "se");
-        createChild(nodeNum, ctx.expr());
-        createChild(nodeNum, "entao");
-        for (ParserRuleContext stm_list : ctx.true_block().stm_list()) {
-            createChild(nodeNum, stm_list);
-        }
-        if (ctx.false_block() != null) {
-            createChild(nodeNum, "senao");
-            for (ParserRuleContext stm_list : ctx.false_block().stm_list()) {
-                createChild(nodeNum, stm_list);
-            }
-        }
-        createChild(nodeNum, "fim_se");
-
-        return nodeNum;
-    }
-
-    @Override
-    public TpPrimitivo visitStm_para(GPortugolParser.Stm_paraContext ctx) {
-        int nodeNum = createNode("stm_para");
-        createChild(nodeNum, "para");
-        createChild(nodeNum, ctx.lvalue());
-        createChild(nodeNum, "de");
-        createChild(nodeNum, ctx.expr(0));
-        createChild(nodeNum, "ate");
-        createChild(nodeNum, ctx.expr(1));
-        if (ctx.passo() != null) {
-            createChild(nodeNum, ctx.passo());
-        }
-        createChild(nodeNum, "faca");
-        for (ParserRuleContext stm_list : ctx.stm_list()) {
-            createChild(nodeNum, stm_list);
-        }
-        createChild(nodeNum, "fim_para");
-        return nodeNum;
-    }
-
-    @Override
-    public TpPrimitivo visitPasso(GPortugolParser.PassoContext ctx) {
-        int nodeNum = createNode("passo");
-        createChild(nodeNum, "passo");
-        if (ctx.op != null) {
-            createChild(nodeNum, ctx.op.getText());
-        }
-        createChild(nodeNum, ctx.T_INT_LIT());
-        return nodeNum;
-    }
-
+//    @Override
+//    public TpPrimitivo visitStm_se(GPortugolParser.Stm_seContext ctx) {
+//        createChild(nodeNum, ctx.expr());
+//        for (ParserRuleContext stm_list : ctx.true_block().stm_list()) {
+//            createChild(nodeNum, stm_list);
+//        }
+//        if (ctx.false_block() != null) {
+//            for (ParserRuleContext stm_list : ctx.false_block().stm_list()) {
+//                createChild(nodeNum, stm_list);
+//            }
+//        }
+//        return nodeNum;
+//    }
+//    @Override
+//    public TpPrimitivo visitStm_para(GPortugolParser.Stm_paraContext ctx) {
+//        int nodeNum = createNode("stm_para");
+//        createChild(nodeNum, "para");
+//        createChild(nodeNum, ctx.lvalue());
+//        createChild(nodeNum, "de");
+//        createChild(nodeNum, ctx.expr(0));
+//        createChild(nodeNum, "ate");
+//        createChild(nodeNum, ctx.expr(1));
+//        if (ctx.passo() != null) {
+//            createChild(nodeNum, ctx.passo());
+//        }
+//        createChild(nodeNum, "faca");
+//        for (ParserRuleContext stm_list : ctx.stm_list()) {
+//            createChild(nodeNum, stm_list);
+//        }
+//        createChild(nodeNum, "fim_para");
+//        return nodeNum;
+//    }
     @Override
     public TpPrimitivo visitExprComp(GPortugolParser.ExprCompContext ctx) {
         int nodeNum = createNode("expr");
@@ -279,67 +279,34 @@ public class VisitorSemantico extends GPortugolBaseVisitor<TpPrimitivo> {
 
     @Override
     public TpPrimitivo visitDefault_termo(GPortugolParser.Default_termoContext ctx) {
-        int nodeNum = createNode("termo");
-        createChild(nodeNum, ctx.getChild(0));
-        return nodeNum;
+        return visit(ctx.getChild(0));
     }
 
     @Override
     public TpPrimitivo visitParentesis_termo(GPortugolParser.Parentesis_termoContext ctx) {
-        int nodeNum = createNode("termo");
-        createChild(nodeNum, "(");
-        createChild(nodeNum, ctx.expr());
-        createChild(nodeNum, ")");
-        return nodeNum;
+        return visit(ctx.expr());
     }
 
     @Override
     public TpPrimitivo visitFcall(GPortugolParser.FcallContext ctx) {
-        int nodeNum = createNode("fcall");
-        createChild(nodeNum, ctx.T_IDENTIFICADOR());
+        int linha = ctx.start.getLine();
         String nome = ctx.T_IDENTIFICADOR().getText();
-        createChild(nodeNum, "(");
         LinkedList<TpPrimitivo> tipos = new LinkedList<>();
         if (ctx.fargs() != null) {
-            createChild(nodeNum, ctx.fargs());
-            tipos.add(translateTipo(nome)); //TODO: AJEITAR PRA VISITAR O FARGS E RETORNAR OS TIPOS
+            for (ParserRuleContext expr : ctx.fargs().expr()) {
+                tipos.add(visit(expr));
+            }
         }
-        createChild(nodeNum, ")");
 
-        Funcao f = new Funcao(nome, tipos, nodeNum); //TODO: NUMERO DA LINHA
+        Funcao f = new Funcao(nome, tipos, linha);
         funcoesUsadas.add(f);
 
-        return nodeNum;
-    }
-
-    @Override
-    public TpPrimitivo visitFargs(GPortugolParser.FargsContext ctx) {
-        int nodeNum = createNode("fargs");
-        createChild(nodeNum, ctx.expr(0));
-        for (int j = 1; j < ctx.expr().size(); j++) {
-            createChild(nodeNum, ctx.expr(j));
-        }
-        return nodeNum;
+        return TpPrimitivo.INDEFINIDO;
     }
 
     @Override
     public TpPrimitivo visitLiteral(GPortugolParser.LiteralContext ctx) {
-        int nodeNum = createNode("literal");
-        String child;
-        if (ctx.T_STRING_LIT() != null || ctx.T_CARAC_LIT() != null) {
-            child = ctx.getChild(0).getText();
-            String car;
-            if (ctx.T_CARAC_LIT() != null) {
-                car = "\\\'";
-            } else {
-                car = "\\\"";
-            }
-            child = car + child.substring(1, child.length() - 1) + car;
-        } else {
-            child = ctx.getChild(0).getText();
-        }
-        createChild(nodeNum, child);
-        return nodeNum;
+        return translateTipo(ctx.getChild(0).getText());
     }
 
     @Override
