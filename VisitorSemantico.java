@@ -14,32 +14,6 @@ public class VisitorSemantico extends GPortugolBaseVisitor<TpPrimitivo> {
     private static LinkedList<Funcao> funcoesUsadas;
     ErrorHandler handler;
 
-    private TpPrimitivo translateTipo(String entrada) {
-        switch (entrada) {
-            case "inteiro":
-                return TpPrimitivo.INTEIRO;
-            case "real":
-                return TpPrimitivo.REAL;
-            case "caractere":
-                return TpPrimitivo.CARACTERE;
-            case "literal":
-                return TpPrimitivo.LITERAL;
-            case "logico":
-                return TpPrimitivo.LOGICO;
-            default:
-                return TpPrimitivo.INDEFINIDO;
-        }
-    }
-
-    private TpPrimitivo tabAttr(TpPrimitivo t1, TpPrimitivo t2) {
-        if (t1 == t2) {
-            return t1;
-        } else if (t1 == TpPrimitivo.REAL && t2 == TpPrimitivo.INTEIRO) {
-            return TpPrimitivo.REAL;
-        }
-        return TpPrimitivo.INDEFINIDO;
-    }
-
     private void verificaFuncao(Funcao funcaoUsada, Funcao funcaoDeclarada) {
         if (funcaoDeclarada == null) {
             handler.instantiateErro(funcaoUsada);
@@ -90,7 +64,7 @@ public class VisitorSemantico extends GPortugolBaseVisitor<TpPrimitivo> {
             identificadores.add(ctx.T_IDENTIFICADOR(j).getText());
         }
         TpPrimitivo tipo;
-        tipo = translateTipo(ctx.tp_primitivo().getText()); //ESTOU CONSIDERANDO O NAO USO DE MATRIZES
+        tipo = TpPrimitivo.translateTipo(ctx.tp_primitivo().getText()); //ESTOU CONSIDERANDO O NAO USO DE MATRIZES
         int lineNum = ctx.getStart().getLine();
         for (String identificador : identificadores) {
             Variavel v = new Variavel(identificador, tipo, lineNum);
@@ -127,15 +101,9 @@ public class VisitorSemantico extends GPortugolBaseVisitor<TpPrimitivo> {
 
     @Override
     public TpPrimitivo visitLvalue(GPortugolParser.LvalueContext ctx) {
-//        createChild(nodeNum, ctx.T_IDENTIFICADOR());
         int linha = ctx.start.getLine();
         Variavel v = new Variavel(ctx.T_IDENTIFICADOR().getText(), TpPrimitivo.INDEFINIDO, linha);
         boolean existe = verificaVariavel(v);
-//        for (ParserRuleContext expr : ctx.expr()) {
-//            createChild(nodeNum, "[");
-//            createChild(nodeNum, expr);
-//            createChild(nodeNum, "]");
-//        }
         if (!existe) {
             handler.instantiateErro(v);
         }
@@ -146,7 +114,7 @@ public class VisitorSemantico extends GPortugolBaseVisitor<TpPrimitivo> {
     public TpPrimitivo visitStm_attr(GPortugolParser.Stm_attrContext ctx) {
         TpPrimitivo tpLvalue = visit(ctx.lvalue());
         TpPrimitivo tpExpr = visit(ctx.expr());
-        TpPrimitivo result = tabAttr(tpLvalue, tpExpr);
+        TpPrimitivo result = TpPrimitivo.tabAttr(tpLvalue, tpExpr);
         int linha = ctx.start.getLine();
         if (result == TpPrimitivo.INDEFINIDO) {
             handler.instantiateErro(linha);
@@ -154,127 +122,154 @@ public class VisitorSemantico extends GPortugolBaseVisitor<TpPrimitivo> {
         return result;
     }
 
-//    @Override
-//    public TpPrimitivo visitStm_se(GPortugolParser.Stm_seContext ctx) {
-//        createChild(nodeNum, ctx.expr());
-//        for (ParserRuleContext stm_list : ctx.true_block().stm_list()) {
-//            createChild(nodeNum, stm_list);
-//        }
-//        if (ctx.false_block() != null) {
-//            for (ParserRuleContext stm_list : ctx.false_block().stm_list()) {
-//                createChild(nodeNum, stm_list);
-//            }
-//        }
-//        return nodeNum;
-//    }
-//    @Override
-//    public TpPrimitivo visitStm_para(GPortugolParser.Stm_paraContext ctx) {
-//        int nodeNum = createNode("stm_para");
-//        createChild(nodeNum, "para");
-//        createChild(nodeNum, ctx.lvalue());
-//        createChild(nodeNum, "de");
-//        createChild(nodeNum, ctx.expr(0));
-//        createChild(nodeNum, "ate");
-//        createChild(nodeNum, ctx.expr(1));
-//        if (ctx.passo() != null) {
-//            createChild(nodeNum, ctx.passo());
-//        }
-//        createChild(nodeNum, "faca");
-//        for (ParserRuleContext stm_list : ctx.stm_list()) {
-//            createChild(nodeNum, stm_list);
-//        }
-//        createChild(nodeNum, "fim_para");
-//        return nodeNum;
-//    }
+    @Override
+    public TpPrimitivo visitStm_se(GPortugolParser.Stm_seContext ctx) {
+        int linha = ctx.start.getLine();
+        TpPrimitivo verificacao = visit(ctx.expr());
+        if (verificacao != TpPrimitivo.LOGICO) {
+            handler.instantiateErro(linha);
+        }
+        for (ParserRuleContext stm_list : ctx.true_block().stm_list()) {
+            visit(stm_list);
+        }
+        if (ctx.false_block() != null) {
+            for (ParserRuleContext stm_list : ctx.false_block().stm_list()) {
+                visit(stm_list);
+            }
+        }
+        return verificacao;
+    }
+
+    @Override
+    public TpPrimitivo visitStm_para(GPortugolParser.Stm_paraContext ctx) {
+        int linha = ctx.start.getLine();
+        TpPrimitivo verificacao = visit(ctx.lvalue());
+        if (verificacao != TpPrimitivo.LOGICO) {
+            handler.instantiateErro(linha);
+        }
+        visit(ctx.expr(0));
+        visit(ctx.expr(1));
+        if (ctx.passo() != null) {
+            visit(ctx.passo());
+        }
+        for (ParserRuleContext stm_list : ctx.stm_list()) {
+            visit(stm_list);
+        }
+        return verificacao;
+    }
+
     @Override
     public TpPrimitivo visitExprComp(GPortugolParser.ExprCompContext ctx) {
-        int nodeNum = createNode("expr");
-        createChild(nodeNum, ctx.expr(0));
-        createChild(nodeNum, ctx.op.getText());
-        createChild(nodeNum, ctx.expr(1));
-        return nodeNum;
+        TpPrimitivo tp1 = visit(ctx.expr(0));
+        TpPrimitivo tp2 = visit(ctx.expr(1));
+        TpPrimitivo result = TpPrimitivo.tabComp(tp1, tp2);
+        int linha = ctx.start.getLine();
+        if (result == TpPrimitivo.INDEFINIDO) {
+            handler.instantiateErro(linha);
+        }
+        return result;
     }
 
     @Override
     public TpPrimitivo visitExprBinaryOr(GPortugolParser.ExprBinaryOrContext ctx) {
-        int nodeNum = createNode("expr");
-        createChild(nodeNum, ctx.expr(0));
-        createChild(nodeNum, "|");
-        createChild(nodeNum, ctx.expr(1));
-        return nodeNum;
+        TpPrimitivo tp1 = visit(ctx.expr(0));
+        TpPrimitivo tp2 = visit(ctx.expr(1));
+        TpPrimitivo result = TpPrimitivo.tabComp(tp1, tp2);
+        int linha = ctx.start.getLine();
+        if (result == TpPrimitivo.INDEFINIDO) {
+            handler.instantiateErro(linha);
+        }
+        return result;
     }
 
     @Override
     public TpPrimitivo visitExprAddSub(GPortugolParser.ExprAddSubContext ctx) {
-        int nodeNum = createNode("expr");
-        createChild(nodeNum, ctx.expr(0));
-        createChild(nodeNum, ctx.op.getText());
-        createChild(nodeNum, ctx.expr(1));
-        return nodeNum;
+        TpPrimitivo tp1 = visit(ctx.expr(0));
+        TpPrimitivo tp2 = visit(ctx.expr(1));
+        TpPrimitivo result = TpPrimitivo.tabBasicOp(tp1, tp2);
+        int linha = ctx.start.getLine();
+        if (result == TpPrimitivo.INDEFINIDO) {
+            handler.instantiateErro(linha);
+        }
+        return result;
     }
 
     @Override
     public TpPrimitivo visitExprTermo(GPortugolParser.ExprTermoContext ctx) {
-        int nodeNum = createNode("expr");
-        if (ctx.op != null) {
-            createChild(nodeNum, ctx.op.getText());
-        }
-        createChild(nodeNum, ctx.termo());
-        return nodeNum;
+        TpPrimitivo result = visit(ctx.termo());
+        return result;
     }
 
     @Override
     public TpPrimitivo visitExprMultDiv(GPortugolParser.ExprMultDivContext ctx) {
-        int nodeNum = createNode("expr");
-        createChild(nodeNum, ctx.expr(0));
-        createChild(nodeNum, ctx.op.getText());
-        createChild(nodeNum, ctx.expr(1));
-        return nodeNum;
+        TpPrimitivo tp1 = visit(ctx.expr(0));
+        TpPrimitivo tp2 = visit(ctx.expr(1));
+        TpPrimitivo result = TpPrimitivo.tabBasicOp(tp1, tp2);
+        int linha = ctx.start.getLine();
+        if (result == TpPrimitivo.INDEFINIDO) {
+            handler.instantiateErro(linha);
+        }
+        return result;
     }
 
     @Override
     public TpPrimitivo visitExprAtrrib(GPortugolParser.ExprAtrribContext ctx) {
-        int nodeNum = createNode("expr");
-        createChild(nodeNum, ctx.expr(0));
-        createChild(nodeNum, ctx.op.getText());
-        createChild(nodeNum, ctx.expr(1));
-        return nodeNum;
+        TpPrimitivo tp1 = visit(ctx.expr(0));
+        TpPrimitivo tp2 = visit(ctx.expr(1));
+        TpPrimitivo result = TpPrimitivo.tabComp(tp1, tp2);
+        int linha = ctx.start.getLine();
+        if (result == TpPrimitivo.INDEFINIDO) {
+            handler.instantiateErro(linha);
+        }
+        return result;
     }
 
     @Override
     public TpPrimitivo visitExprBinaryAnd(GPortugolParser.ExprBinaryAndContext ctx) {
-        int nodeNum = createNode("expr");
-        createChild(nodeNum, ctx.expr(0));
-        createChild(nodeNum, "&");
-        createChild(nodeNum, ctx.expr(1));
-        return nodeNum;
+        TpPrimitivo tp1 = visit(ctx.expr(0));
+        TpPrimitivo tp2 = visit(ctx.expr(1));
+        TpPrimitivo result = TpPrimitivo.tabComp(tp1, tp2);
+        int linha = ctx.start.getLine();
+        if (result == TpPrimitivo.INDEFINIDO) {
+            handler.instantiateErro(linha);
+        }
+        return result;
     }
 
     @Override
     public TpPrimitivo visitExprAnd(GPortugolParser.ExprAndContext ctx) {
-        int nodeNum = createNode("expr");
-        createChild(nodeNum, ctx.expr(0));
-        createChild(nodeNum, ctx.op.getText());
-        createChild(nodeNum, ctx.expr(1));
-        return nodeNum;
+        TpPrimitivo tp1 = visit(ctx.expr(0));
+        TpPrimitivo tp2 = visit(ctx.expr(1));
+        TpPrimitivo result = TpPrimitivo.tabComp(tp1, tp2);
+        int linha = ctx.start.getLine();
+        if (result == TpPrimitivo.INDEFINIDO) {
+            handler.instantiateErro(linha);
+        }
+        return result;
     }
 
     @Override
     public TpPrimitivo visitExprOr(GPortugolParser.ExprOrContext ctx) {
-        int nodeNum = createNode("expr");
-        createChild(nodeNum, ctx.expr(0));
-        createChild(nodeNum, ctx.op.getText());
-        createChild(nodeNum, ctx.expr(1));
-        return nodeNum;
+        TpPrimitivo tp1 = visit(ctx.expr(0));
+        TpPrimitivo tp2 = visit(ctx.expr(1));
+        TpPrimitivo result = TpPrimitivo.tabComp(tp1, tp2);
+        int linha = ctx.start.getLine();
+        if (result == TpPrimitivo.INDEFINIDO) {
+            handler.instantiateErro(linha);
+        }
+        return result;
     }
 
     @Override
     public TpPrimitivo visitExprPow(GPortugolParser.ExprPowContext ctx) {
-        int nodeNum = createNode("expr");
-        createChild(nodeNum, ctx.expr(0));
-        createChild(nodeNum, "^");
-        createChild(nodeNum, ctx.expr(1));
-        return nodeNum;
+        TpPrimitivo tp1 = visit(ctx.expr(0));
+        TpPrimitivo tp2 = visit(ctx.expr(1));
+        TpPrimitivo result = TpPrimitivo.tabComp(tp1, tp2);
+        int linha = ctx.start.getLine();
+        if (result == TpPrimitivo.INDEFINIDO) {
+            handler.instantiateErro(linha);
+        }
+        return result;
     }
 
     @Override
@@ -306,67 +301,52 @@ public class VisitorSemantico extends GPortugolBaseVisitor<TpPrimitivo> {
 
     @Override
     public TpPrimitivo visitLiteral(GPortugolParser.LiteralContext ctx) {
-        return translateTipo(ctx.getChild(0).getText());
+        return TpPrimitivo.translateTipo(ctx.getChild(0).getText());
     }
 
     @Override
     public TpPrimitivo visitFunc_decls(GPortugolParser.Func_declsContext ctx) {
-        int nodeNum = createNode("func_decls");
-        createChild(nodeNum, "funcao");
-        createChild(nodeNum, ctx.T_IDENTIFICADOR());
+        int linha = ctx.start.getLine();
         String nome = ctx.T_IDENTIFICADOR().getText();
-        createChild(nodeNum, "(");
         LinkedList<TpPrimitivo> params = new LinkedList<>();
         if (ctx.fparams() != null) {
-            createChild(nodeNum, ctx.fparams());
-            params.add(translateTipo(nome)); //TODO: AJEITAR PRA VISITAR O FPARAMS E RETORNAR OS TIPOS
+            for (ParserRuleContext fparam : ctx.fparams().fparam()) {
+                params.add(visit(fparam));
+            }
         }
-        createChild(nodeNum, ")");
-        Funcao f = new Funcao(nome, params, nodeNum); //TODO: NUMERO DA LINHA
+        Funcao f = new Funcao(nome, params, linha); 
         if (ctx.tp_primitivo() != null) {
-            createChild(nodeNum, ":");
-            createChild(nodeNum, ctx.tp_primitivo());
-            f.setRetorno(translateTipo(ctx.tp_primitivo().getText()));
+            f.setRetorno(visit(ctx.tp_primitivo()));
         }
+        tabelaVariaveis = new TabelaSimbolos<>();
         if (ctx.fvar_decl().getChildCount() > 0) {
-            createChild(nodeNum, ctx.fvar_decl()); //TODO: DAR UM JEITO DE CRIAR UMA TABELA DE VARIAVEIS QUE SOH VALHA PRO STM_BLOCK DAQUI
+            visit(ctx.fvar_decl());
         }
-        createChild(nodeNum, ctx.stm_block());
+        visit(ctx.stm_block());
 
-        return nodeNum;
+        return f.getRetorno();
     }
 
     @Override
     public TpPrimitivo visitFvar_decl(GPortugolParser.Fvar_declContext ctx) {
-        int nodeNum = createNode("fvar_decl");
         for (ParserRuleContext var_decl : ctx.var_decl()) {
-            createChild(nodeNum, var_decl);
-            createChild(nodeNum, ";");
+            visit(var_decl);
         }
-        return nodeNum;
-    }
-
-    @Override
-    public TpPrimitivo visitFparams(GPortugolParser.FparamsContext ctx) {
-        int nodeNum = createNode("fparams");
-        createChild(nodeNum, ctx.fparam(0));
-        for (int j = 1; j < ctx.fparam().size(); j++) {
-            createChild(nodeNum, ",");
-            createChild(nodeNum, ctx.fparam(j));
-        }
-        return nodeNum;
+        return TpPrimitivo.INDEFINIDO;
     }
 
     @Override
     public TpPrimitivo visitFparam(GPortugolParser.FparamContext ctx) {
-        int nodeNum = createNode("fparam");
-        createChild(nodeNum, ctx.T_IDENTIFICADOR());
-        createChild(nodeNum, ":");
+        int linha = ctx.start.getLine();
+        String nome = ctx.T_IDENTIFICADOR().getText();
+        TpPrimitivo tipo = TpPrimitivo.INDEFINIDO;
         if (ctx.tp_primitivo() != null) {
-            createChild(nodeNum, ctx.tp_primitivo());
-        } else {
+            tipo = visit(ctx.tp_primitivo());
+        }/* else {
             createChild(nodeNum, ctx.tp_matriz());
-        }
-        return nodeNum;
+        }*/
+        Variavel v = new Variavel(nome, tipo, linha);
+        tabelaVariaveis.add(v);
+        return tipo;
     }
 }

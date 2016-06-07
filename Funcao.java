@@ -33,6 +33,10 @@ public class Funcao {
         this.retorno = retorno;
     }
     
+    public TpPrimitivo getRetorno(){
+        return this.retorno;
+    }
+    
     @Override
     public boolean equals(Object a){
         return ((a instanceof Funcao || a instanceof String)
