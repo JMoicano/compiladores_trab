@@ -28,14 +28,9 @@ public class Trab3 {
         GPortugolLexer lexer = new GPortugolLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         GPortugolParser parser = new GPortugolParser(tokens);
-        ParseTree tree = parser.algoritmo(); // parse
+        ParseTree tree = parser.algoritmo();
 
-        System.out.println("digraph {\n" +
-                            "graph [ordering=\"out\"];");
-        
         VisitorSemantico visitor = new VisitorSemantico();
         visitor.visit(tree);
-        
-        System.out.println("}");
     }
 }
