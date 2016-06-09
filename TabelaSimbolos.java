@@ -19,19 +19,19 @@ public class TabelaSimbolos<T> {
             LinkedList<T> lista = this.tabela.get(indice);
             if (lista == null) {
                 lista = new LinkedList<>();
-            } else {
-                if (lista.contains(s)) {
-                    return false;
-                }
+                tabela.put(indice, lista);
             }
             lista.add(s);
             this.contagem++;
+        }else{
+            return false;
         }
         return true;
     }
 
     public T get(T s){
         int indice = s.hashCode();
+        if(tabela.get(indice) == null) return null;
         for (T obj : tabela.get(indice)) {
             if(obj.equals(s)){
                 return obj;

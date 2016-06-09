@@ -5,7 +5,7 @@
  */
 public class ErrorHandler {
 
-    private ErrorHandler() {
+    public ErrorHandler() {
     }
 
     private String inicioErro(int numLinha) {
@@ -47,12 +47,12 @@ public class ErrorHandler {
     }
 
     public void instantiateErro(Variavel v, int linha) {
-        System.out.println(inicioErro(v.getLinha()) + tipoVariavel(v.getNome()) + erroRedeclaracao(linha));
+        System.out.println(inicioErro(linha) + tipoVariavel(v.getNome()) + erroRedeclaracao(v.getLinha()));
         System.exit(1);
     }
 
     public void instantiateErro(Funcao f, int linha) {
-        System.out.println(inicioErro(f.getLinha()) + tipoFuncao(f.getNome()) + erroRedeclaracao(linha));
+        System.out.println(inicioErro(linha) + tipoFuncao(f.getNome()) + erroRedeclaracao(f.getLinha()));
         System.exit(1);
     }
     

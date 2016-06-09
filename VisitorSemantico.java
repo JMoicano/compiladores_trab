@@ -12,18 +12,27 @@ public class VisitorSemantico extends GPortugolBaseVisitor<TpPrimitivo> {
     private static TabelaSimbolos<Variavel> tabelaVariaveis;
     private static TabelaSimbolos<Funcao> tabelaFuncoes;
     private static LinkedList<Funcao> funcoesUsadas;
-    ErrorHandler handler;
+    private static final ErrorHandler handler = new ErrorHandler();
 
     private void verificaFuncao(Funcao funcaoUsada, Funcao funcaoDeclarada) {
         if (funcaoDeclarada == null) {
             handler.instantiateErro(funcaoUsada);
         }
-        int parametros = funcaoDeclarada.getAridade();
-        int argumentos = funcaoUsada.getAridade();
-        if (parametros != argumentos) {
-            handler.instantiateErro(funcaoUsada, argumentos, parametros);
+        if (!funcaoDeclarada.getNome().equals("imprima")) {
+            int numParametros = funcaoDeclarada.getAridade();
+            int numArgumentos = funcaoUsada.getAridade();
+            if (numParametros != numArgumentos) {
+                handler.instantiateErro(funcaoUsada, numArgumentos, numParametros);
+}
+            LinkedList <TpPrimitivo> parametros = funcaoDeclarada.getParametros();
+            LinkedList <TpPrimitivo> argumentos = funcaoUsada.getParametros();
+            for (int i = 0; i < numParametros; i++) {
+                TpPrimitivo result = TpPrimitivo.tabAttr(parametros.get(i), argumentos.get(i));
+                if (result == TpPrimitivo.INDEFINIDO) {
+                    handler.instantiateErro(funcaoUsada.getLinha());
+                }
+            }
         }
-        //TODO: VER TIPOS NOS ARGUMENTOS
     }
 
     private boolean verificaVariavel(Variavel a) {
@@ -32,14 +41,21 @@ public class VisitorSemantico extends GPortugolBaseVisitor<TpPrimitivo> {
 
     @Override
     public TpPrimitivo visitAlgoritmo(GPortugolParser.AlgoritmoContext ctx) {
-        tabelaVariaveis = new TabelaSimbolos<>();
         visit(ctx.declaracao_algoritmo());
+        tabelaVariaveis = new TabelaSimbolos<>();
         if (ctx.var_decl_block() != null) {
             visit(ctx.var_decl_block());
         }
+        funcoesUsadas = new LinkedList<>();
         visit(ctx.stm_block());
-        for (ParserRuleContext func_decls : ctx.func_decls()) {
-            visit(func_decls);
+        tabelaFuncoes = new TabelaSimbolos<>();
+        Funcao leia = new Funcao("leia", new LinkedList<TpPrimitivo>(), -1);
+        Funcao imprima = new Funcao("imprima", new LinkedList<TpPrimitivo>(), -1);
+        leia.setRetorno(TpPrimitivo.INDEFINIDO);
+        tabelaFuncoes.add(leia);
+        tabelaFuncoes.add(imprima);
+        for (ParserRuleContext func_decl : ctx.func_decls()) {
+            visit(func_decl);
         }
         for (Funcao funcaoUsada : funcoesUsadas) {
             Funcao funcaoDeclarada = tabelaFuncoes.get(funcaoUsada);
@@ -68,7 +84,10 @@ public class VisitorSemantico extends GPortugolBaseVisitor<TpPrimitivo> {
         int lineNum = ctx.getStart().getLine();
         for (String identificador : identificadores) {
             Variavel v = new Variavel(identificador, tipo, lineNum);
-            tabelaVariaveis.add(v);
+            if (!tabelaVariaveis.add(v)) {
+                Variavel original = tabelaVariaveis.get(v);
+                handler.instantiateErro(original, lineNum);
+            }
         }
         return tipo;
     }
@@ -301,7 +320,17 @@ public class VisitorSemantico extends GPortugolBaseVisitor<TpPrimitivo> {
 
     @Override
     public TpPrimitivo visitLiteral(GPortugolParser.LiteralContext ctx) {
-        return TpPrimitivo.translateTipo(ctx.getChild(0).getText());
+        if (ctx.T_CARAC_LIT() != null) {
+            return TpPrimitivo.CARACTERE;
+        } else if (ctx.T_INT_LIT() != null) {
+            return TpPrimitivo.INTEIRO;
+        } else if (ctx.T_KW_FALSO() != null || ctx.T_KW_VERDADEIRO() != null) {
+            return TpPrimitivo.LOGICO;
+        } else if (ctx.T_REAL_LIT() != null) {
+            return TpPrimitivo.REAL;
+        } else {
+            return TpPrimitivo.LITERAL;
+        }
     }
 
     @Override
@@ -309,20 +338,25 @@ public class VisitorSemantico extends GPortugolBaseVisitor<TpPrimitivo> {
         int linha = ctx.start.getLine();
         String nome = ctx.T_IDENTIFICADOR().getText();
         LinkedList<TpPrimitivo> params = new LinkedList<>();
+        tabelaVariaveis = new TabelaSimbolos<>();
         if (ctx.fparams() != null) {
             for (ParserRuleContext fparam : ctx.fparams().fparam()) {
                 params.add(visit(fparam));
             }
         }
-        Funcao f = new Funcao(nome, params, linha); 
+        Funcao f = new Funcao(nome, params, linha);
         if (ctx.tp_primitivo() != null) {
             f.setRetorno(visit(ctx.tp_primitivo()));
         }
-        tabelaVariaveis = new TabelaSimbolos<>();
         if (ctx.fvar_decl().getChildCount() > 0) {
             visit(ctx.fvar_decl());
         }
         visit(ctx.stm_block());
+
+        if (!tabelaFuncoes.add(f)) {
+            Funcao original = tabelaFuncoes.get(f);
+            handler.instantiateErro(original, linha);
+        }
 
         return f.getRetorno();
     }
@@ -342,9 +376,7 @@ public class VisitorSemantico extends GPortugolBaseVisitor<TpPrimitivo> {
         TpPrimitivo tipo = TpPrimitivo.INDEFINIDO;
         if (ctx.tp_primitivo() != null) {
             tipo = visit(ctx.tp_primitivo());
-        }/* else {
-            createChild(nodeNum, ctx.tp_matriz());
-        }*/
+        }
         Variavel v = new Variavel(nome, tipo, linha);
         tabelaVariaveis.add(v);
         return tipo;

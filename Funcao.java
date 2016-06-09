@@ -29,6 +29,10 @@ public class Funcao {
         return parametros.size();
     }
     
+    public LinkedList<TpPrimitivo> getParametros(){
+        return this.parametros;
+    }
+    
     public void setRetorno(TpPrimitivo retorno){
         this.retorno = retorno;
     }
