@@ -12,7 +12,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
  *
  * @author 2012100265
  */
-public class VisitorIR extends GPortugolBaseVisitor<TpPrimitivo> { //TODO: SO COPIEI A CLASSE!!!!!
+public class VisitorIR extends GPortugolBaseVisitor<AST> { //TODO: SO COPIEI A CLASSE!!!!!
 
     private static TabelaSimbolos<Variavel> tabelaVariaveis;
     private static TabelaSimbolos<Funcao> tabelaFuncoes;
@@ -45,14 +45,15 @@ public class VisitorIR extends GPortugolBaseVisitor<TpPrimitivo> { //TODO: SO CO
     }
 
     @Override
-    public TpPrimitivo visitAlgoritmo(GPortugolParser.AlgoritmoContext ctx) {
-        visit(ctx.declaracao_algoritmo());
+    public AST visitAlgoritmo(GPortugolParser.AlgoritmoContext ctx) {
+        AST no = new AST(1);
+        no.add(visit(ctx.declaracao_algoritmo()));
         tabelaVariaveis = new TabelaSimbolos<>();
         if (ctx.var_decl_block() != null) {
-            visit(ctx.var_decl_block());
+            no.add(visit(ctx.var_decl_block()));
         }
         funcoesUsadas = new LinkedList<>();
-        visit(ctx.stm_block());
+        no.add(visit(ctx.stm_block()));
         tabelaFuncoes = new TabelaSimbolos<>();
         Funcao leia = new Funcao("leia", new LinkedList<TpPrimitivo>(), -1);
         Funcao imprima = new Funcao("imprima", new LinkedList<TpPrimitivo>(), -1);
@@ -60,25 +61,26 @@ public class VisitorIR extends GPortugolBaseVisitor<TpPrimitivo> { //TODO: SO CO
         tabelaFuncoes.add(leia);
         tabelaFuncoes.add(imprima);
         for (ParserRuleContext func_decl : ctx.func_decls()) {
-            visit(func_decl);
+            no.add(visit(func_decl));
         }
         for (Funcao funcaoUsada : funcoesUsadas) {
             Funcao funcaoDeclarada = tabelaFuncoes.get(funcaoUsada);
             verificaFuncao(funcaoUsada, funcaoDeclarada);
         }
-        return TpPrimitivo.INDEFINIDO;
+        return no;
     }
 
     @Override
-    public TpPrimitivo visitVar_decl_block(GPortugolParser.Var_decl_blockContext ctx) {
+    public AST visitVar_decl_block(GPortugolParser.Var_decl_blockContext ctx) {
+        AST no = new AST(3);
         for (ParserRuleContext var_decl : ctx.var_decl()) {
-            visit(var_decl);
+            no.add(visit(var_decl));
         }
-        return TpPrimitivo.INDEFINIDO;
+        return no;
     }
 
     @Override
-    public TpPrimitivo visitVar_decl(GPortugolParser.Var_declContext ctx) {
+    public AST visitVar_decl(GPortugolParser.Var_declContext ctx) {
         LinkedList<String> identificadores = new LinkedList<>();
         identificadores.add(ctx.T_IDENTIFICADOR(0).getText());
         for (int j = 1; j < ctx.T_IDENTIFICADOR().size(); j++) {
