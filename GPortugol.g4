@@ -48,6 +48,7 @@ stm_attr			:	lvalue ':=' expr ';'
 					;
 
 true_block : stm_list+ ;
+
 false_block : stm_list+ ;
 
 stm_se				:	'se' expr 'entao' true_block ('senao' false_block)? 'fim_se'
@@ -82,8 +83,6 @@ termo				:	fcall			#default_termo
 					
 fcall				:	T_IDENTIFICADOR '(' fargs? ')';
 
-
-
 fargs				:	expr (',' expr)*;
 
 literal				:	T_STRING_LIT
@@ -96,10 +95,13 @@ literal				:	T_STRING_LIT
 
 func_decls			:	'funcao' T_IDENTIFICADOR '(' fparams? ')' (':' tp_primitivo)? fvar_decl stm_block
 					;
+
 fvar_decl			:	(var_decl ';')*
 					;
+
 fparams				:	fparam (',' fparam)*
 					;
+
 fparam 				:	T_IDENTIFICADOR ':' (tp_primitivo | tp_matriz)
 					;
 

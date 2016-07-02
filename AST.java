@@ -15,6 +15,7 @@ public class AST {
     private int type;
     private String name;
     private double value;
+    private TpPrimitivo tpPrimitivo;
     private final ArrayList <AST> children;
     
     public AST(int type){
@@ -35,6 +36,11 @@ public class AST {
     public AST(int type, double value){
         this(type);
         this.value = value;
+    }
+    
+    public AST(int type, TpPrimitivo tpPrimitivo){
+        this(type);
+        this.tpPrimitivo = tpPrimitivo;
     }
     
     public void add(AST n){
