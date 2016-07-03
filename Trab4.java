@@ -30,6 +30,8 @@ public class Trab4 {
         ParseTree tree = parser.algoritmo();
 
         VisitorIR visitor = new VisitorIR();
-        visitor.visit(tree);
+        AST ast = visitor.visit(tree);
+        Executor exec = new Executor();
+        exec.run(ast);
     }
 }

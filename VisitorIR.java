@@ -1,16 +1,13 @@
+
 import java.util.LinkedList;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.tree.TerminalNode;
 
 /**
  *
  * @author 2012100265
  */
-public class VisitorIR extends GPortugolBaseVisitor<AST> { 
-
-//    private static TabelaSimbolos<Variavel> tabelaVariaveis;
-//    private static TabelaSimbolos<Funcao> tabelaFuncoes;
-//    private static LinkedList<Funcao> funcoesUsadas;
-//    private static final ErrorHandler handler = new ErrorHandler();
+public class VisitorIR extends GPortugolBaseVisitor<AST> {
 
 //    private void verificaFuncao(Funcao funcaoUsada, Funcao funcaoDeclarada) {
 //        if (funcaoDeclarada == null) {
@@ -33,17 +30,13 @@ public class VisitorIR extends GPortugolBaseVisitor<AST> {
 //        }
 //    }
 //
-//    private boolean verificaVariavel(Variavel a) {
-//        return tabelaVariaveis.lookUp(a);
-//    }
-
     @Override
     public AST visitAlgoritmo(GPortugolParser.AlgoritmoContext ctx) {
         AST no = new AST(1);
-        no.add(visit(ctx.declaracao_algoritmo()));
-//        tabelaVariaveis = new TabelaSimbolos<>();
         if (ctx.var_decl_block() != null) {
-            no.add(visit(ctx.var_decl_block()));
+            for (ParserRuleContext var_decl : ctx.var_decl_block().var_decl()) {
+                no.add(visit(var_decl));
+            }
         }
 //        funcoesUsadas = new LinkedList<>();
         no.add(visit(ctx.stm_block()));
@@ -64,43 +57,24 @@ public class VisitorIR extends GPortugolBaseVisitor<AST> {
     }
 
     @Override
-    public AST visitVar_decl_block(GPortugolParser.Var_decl_blockContext ctx) {
-        AST no = new AST(3);
-        for (ParserRuleContext var_decl : ctx.var_decl()) {
-            no.add(visit(var_decl));
-        }
-        return no;
-    }
-
-    @Override
     public AST visitVar_decl(GPortugolParser.Var_declContext ctx) {
-        
-        LinkedList<String> identificadores = new LinkedList<>();
-        identificadores.add(ctx.T_IDENTIFICADOR(0).getText());
-        for (int j = 1; j < ctx.T_IDENTIFICADOR().size(); j++) {
-            identificadores.add(ctx.T_IDENTIFICADOR(j).getText());
-        }
-        AST no = visit(ctx.tp_primitivo());
-//        int lineNum = ctx.getStart().getLine();
-        for (String identificador : identificadores) {
-            AST filho = new AST(67, identificador);
+        AST no = new AST(4);
+        no.add(visit(ctx.tp_primitivo()));
+        int lineNum = ctx.getStart().getLine();
+        for (TerminalNode T_IDENTIFICADOR : ctx.T_IDENTIFICADOR()) {
+            AST filho = new AST(67, T_IDENTIFICADOR.getText(), lineNum);
             no.add(filho);
-//            Variavel v = new Variavel(identificador, tipo, lineNum);
-//            if (!tabelaVariaveis.add(v)) {
-//                Variavel original = tabelaVariaveis.get(v);
-//                handler.instantiateErro(original, lineNum);
-//            }
         }
         return no;
     }
 
     @Override
-    public AST visitTp_primitivo(GPortugolParser.Tp_primitivoContext ctx){
+    public AST visitTp_primitivo(GPortugolParser.Tp_primitivoContext ctx) {
         int type = 7;
-        switch(ctx.getText()){
+        switch (ctx.getText()) {
             case "inteiro":
-              type = 7;
-              break;
+                type = 7;
+                break;
             case "real":
                 type = 8;
                 break;
@@ -117,6 +91,7 @@ public class VisitorIR extends GPortugolBaseVisitor<AST> {
         AST no = new AST(type);
         return no;
     }
+
     @Override
     public AST visitStm_block(GPortugolParser.Stm_blockContext ctx) {
         AST no = new AST(16);
@@ -147,14 +122,9 @@ public class VisitorIR extends GPortugolBaseVisitor<AST> {
 
     @Override
     public AST visitLvalue(GPortugolParser.LvalueContext ctx) {
-//        int linha = ctx.start.getLine();
         AST no = new AST(24);
-//        Variavel v = new Variavel(ctx.T_IDENTIFICADOR().getText(), TpPrimitivo.INDEFINIDO, linha);
-//        boolean existe = verificaVariavel(v);
-//        if (!existe) {
-//            handler.instantiateErro(v);
-//        }
-        no.add(new AST(67, ctx.T_IDENTIFICADOR().getText()));
+        int linha = ctx.start.getLine();
+        no.add(new AST(67, ctx.T_IDENTIFICADOR().getText(), linha));
         return no;
     }
 
@@ -172,23 +142,23 @@ public class VisitorIR extends GPortugolBaseVisitor<AST> {
     }
 
     @Override
-    public AST visitTrue_block(GPortugolParser.True_blockContext ctx){
+    public AST visitTrue_block(GPortugolParser.True_blockContext ctx) {
         AST no = new AST(26);
         for (ParserRuleContext stm_list : ctx.stm_list()) {
             no.add(visit(stm_list));
         }
         return no;
     }
-    
+
     @Override
-    public AST visitFalse_block(GPortugolParser.False_blockContext ctx){
+    public AST visitFalse_block(GPortugolParser.False_blockContext ctx) {
         AST no = new AST(27);
         for (ParserRuleContext stm_list : ctx.stm_list()) {
             no.add(visit(stm_list));
         }
         return no;
     }
-    
+
     @Override
     public AST visitStm_se(GPortugolParser.Stm_seContext ctx) {
         AST no = new AST(28);
@@ -210,7 +180,7 @@ public class VisitorIR extends GPortugolBaseVisitor<AST> {
     }
 
     @Override
-    public AST visitStm_enquanto(GPortugolParser.Stm_enquantoContext ctx){
+    public AST visitStm_enquanto(GPortugolParser.Stm_enquantoContext ctx) {
         AST no = new AST(29);
         no.add(visit(ctx.expr()));
         for (ParserRuleContext stm_list : ctx.stm_list()) {
@@ -218,7 +188,7 @@ public class VisitorIR extends GPortugolBaseVisitor<AST> {
         }
         return no;
     }
-    
+
     @Override
     public AST visitStm_para(GPortugolParser.Stm_paraContext ctx) {
         AST no = new AST(30);
@@ -239,13 +209,13 @@ public class VisitorIR extends GPortugolBaseVisitor<AST> {
     }
 
     @Override
-    public AST visitPasso(GPortugolParser.PassoContext ctx){
+    public AST visitPasso(GPortugolParser.PassoContext ctx) {
         AST no = new AST(31);
         no.add(new AST(ctx.op.getType()));
         no.add(new AST(60, Integer.parseInt(ctx.T_INT_LIT().getText())));
         return no;
     }
-    
+
     @Override
     public AST visitExprComp(GPortugolParser.ExprCompContext ctx) {
         AST no = new AST(38);
@@ -291,7 +261,9 @@ public class VisitorIR extends GPortugolBaseVisitor<AST> {
     @Override
     public AST visitExprTermo(GPortugolParser.ExprTermoContext ctx) {
         AST no = new AST(41);
-        no.add(new AST(ctx.op.getType()));
+        if (ctx.op != null) {
+            no.add(new AST(ctx.op.getType()));
+        }
         no.add(visit(ctx.termo()));
         return no;
     }
@@ -393,9 +365,9 @@ public class VisitorIR extends GPortugolBaseVisitor<AST> {
     @Override
     public AST visitFcall(GPortugolParser.FcallContext ctx) {
         AST no = new AST(46);
-//        int linha = ctx.start.getLine();
+        int linha = ctx.start.getLine();
 //        String nome = ctx.T_IDENTIFICADOR().getText();
-        no.add(new AST(67, ctx.T_IDENTIFICADOR().getText()));
+        no.add(new AST(67, ctx.T_IDENTIFICADOR().getText(), linha));
 //        LinkedList<TpPrimitivo> tipos = new LinkedList<>();
         if (ctx.fargs() != null) {
             no.add(visit(ctx.fargs()));
@@ -406,7 +378,6 @@ public class VisitorIR extends GPortugolBaseVisitor<AST> {
 
 //        Funcao f = new Funcao(nome, tipos, linha);
 //        funcoesUsadas.add(f);
-
         return no;
     }
 
@@ -418,9 +389,9 @@ public class VisitorIR extends GPortugolBaseVisitor<AST> {
             return new AST(60, Integer.parseInt(ctx.T_INT_LIT().getText()));
         } else if (ctx.T_KW_FALSO() != null) {
             return new AST(62, 0);
-        } else if(ctx.T_KW_VERDADEIRO() != null){
+        } else if (ctx.T_KW_VERDADEIRO() != null) {
             return new AST(61, 1);
-        }else if (ctx.T_REAL_LIT() != null) {
+        } else if (ctx.T_REAL_LIT() != null) {
             return new AST(59, Double.parseDouble(ctx.T_REAL_LIT().getText()));
         } else {
             return new AST(60, 0);
@@ -455,7 +426,6 @@ public class VisitorIR extends GPortugolBaseVisitor<AST> {
 //            Funcao original = tabelaFuncoes.get(f);
 //            handler.instantiateErro(original, linha);
 //        }
-
         return no;
     }
 
@@ -469,14 +439,14 @@ public class VisitorIR extends GPortugolBaseVisitor<AST> {
     }
 
     @Override
-    public AST visitFparams(GPortugolParser.FparamsContext ctx){
+    public AST visitFparams(GPortugolParser.FparamsContext ctx) {
         AST no = new AST(56);
         for (ParserRuleContext fparam : ctx.fparam()) {
             no.add(visit(fparam));
         }
         return no;
     }
-    
+
     @Override
     public AST visitFparam(GPortugolParser.FparamContext ctx) {
         AST no = new AST(57);

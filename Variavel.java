@@ -4,6 +4,7 @@ import java.util.Objects;
 public class Variavel {
 
     private final String nome;
+    private double valor;
     private final TpPrimitivo tipo;
     private final int linha;
 
@@ -23,6 +24,14 @@ public class Variavel {
 
     public String getNome() {
         return nome;
+    }
+    
+    public double getValor() {
+        return valor;
+    }
+
+    public void setValor(double valor) {
+        this.valor = valor;
     }
     
     @Override

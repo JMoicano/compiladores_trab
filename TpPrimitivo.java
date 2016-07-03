@@ -11,6 +11,23 @@ public enum TpPrimitivo {
         return TpPrimitivo.valueOf(value.toUpperCase());
     }
 
+    public static TpPrimitivo translateTipo(int value) {
+        switch (value) {
+            case 7:
+                return INTEIRO;
+            case 8:
+                return REAL;
+            case 9:
+                return CARACTERE;
+            case 10:
+                return LITERAL;
+            case 11:
+                return LOGICO;
+            default:
+                return INDEFINIDO;
+        }
+    }
+
     public static TpPrimitivo tabAttr(TpPrimitivo t1, TpPrimitivo t2) {
         if ((t1 == LITERAL && t2 != LITERAL) || (t1 != LITERAL && t2 == LITERAL)
                 || (t1 == LOGICO && t2 != LOGICO) || (t1 != LOGICO && t2 == LOGICO)
