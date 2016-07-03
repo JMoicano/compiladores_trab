@@ -14,7 +14,6 @@ import java.util.ArrayList;
 public class AST {
     private int type;
     private String name;
-    private int line;
     private double value;
     private TpPrimitivo tpPrimitivo;
     private final ArrayList <AST> children;
@@ -32,7 +31,7 @@ public class AST {
     public AST(int type, String name, int line){
         this(type);
         this.name = name;
-        this.line = line;
+        this.value = line;
     }
     
     public AST(int type, int value){
@@ -71,7 +70,7 @@ public class AST {
     }
     
     public int getLine(){
-        return line;
+        return (int)value;
     }
     
     public int getType(){

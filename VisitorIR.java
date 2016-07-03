@@ -1,5 +1,4 @@
 
-import java.util.LinkedList;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
@@ -94,7 +93,7 @@ public class VisitorIR extends GPortugolBaseVisitor<AST> {
 
     @Override
     public AST visitStm_block(GPortugolParser.Stm_blockContext ctx) {
-        AST no = new AST(16);
+        AST no = new AST(21);
         for (ParserRuleContext child : ctx.stm_list()) {
             no.add(visit(child));
         }
@@ -122,15 +121,14 @@ public class VisitorIR extends GPortugolBaseVisitor<AST> {
 
     @Override
     public AST visitLvalue(GPortugolParser.LvalueContext ctx) {
-        AST no = new AST(24);
         int linha = ctx.start.getLine();
-        no.add(new AST(67, ctx.T_IDENTIFICADOR().getText(), linha));
+        AST no = new AST(67, ctx.T_IDENTIFICADOR().getText(), linha);
         return no;
     }
 
     @Override
     public AST visitStm_attr(GPortugolParser.Stm_attrContext ctx) {
-        AST no = new AST(25);
+        AST no = new AST(24);
         no.add(visit(ctx.lvalue()));
         no.add(visit(ctx.expr()));
 //        TpPrimitivo result = TpPrimitivo.tabAttr(tpLvalue, tpExpr);
@@ -161,20 +159,12 @@ public class VisitorIR extends GPortugolBaseVisitor<AST> {
 
     @Override
     public AST visitStm_se(GPortugolParser.Stm_seContext ctx) {
-        AST no = new AST(28);
-//        int linha = ctx.start.getLine();
+        int linha = ctx.start.getLine();
+        AST no = new AST(25, linha);
         no.add(visit(ctx.expr()));
-//        if (verificacao != TpPrimitivo.LOGICO) {
-//            handler.instantiateErro(linha);
-//        }
-//        for (ParserRuleContext stm_list : ctx.true_block().stm_list()) {
         no.add(visit(ctx.true_block()));
-//        }
         if (ctx.false_block() != null) {
             no.add(visit(ctx.false_block()));
-//            for (ParserRuleContext stm_list : ctx.false_block().stm_list()) {
-//                visit(stm_list);
-//            }
         }
         return no;
     }
@@ -191,7 +181,7 @@ public class VisitorIR extends GPortugolBaseVisitor<AST> {
 
     @Override
     public AST visitStm_para(GPortugolParser.Stm_paraContext ctx) {
-        AST no = new AST(30);
+        AST no = new AST(32);
 //        int linha = ctx.start.getLine();
         no.add(visit(ctx.lvalue()));
 //        if (verificacao != TpPrimitivo.LOGICO) {
@@ -210,7 +200,7 @@ public class VisitorIR extends GPortugolBaseVisitor<AST> {
 
     @Override
     public AST visitPasso(GPortugolParser.PassoContext ctx) {
-        AST no = new AST(31);
+        AST no = new AST(35);
         no.add(new AST(ctx.op.getType()));
         no.add(new AST(60, Integer.parseInt(ctx.T_INT_LIT().getText())));
         return no;
@@ -218,9 +208,8 @@ public class VisitorIR extends GPortugolBaseVisitor<AST> {
 
     @Override
     public AST visitExprComp(GPortugolParser.ExprCompContext ctx) {
-        AST no = new AST(38);
+        AST no = new AST(ctx.op.getType());
         no.add(visit(ctx.expr(0)));
-        no.add(new AST(ctx.op.getType()));
         no.add(visit(ctx.expr(1)));
 //        TpPrimitivo result = TpPrimitivo.tabComp(tp1, tp2);
 //        int linha = ctx.start.getLine();
@@ -232,9 +221,8 @@ public class VisitorIR extends GPortugolBaseVisitor<AST> {
 
     @Override
     public AST visitExprBinaryOr(GPortugolParser.ExprBinaryOrContext ctx) {
-        AST no = new AST(35);
+        AST no = new AST(42);
         no.add(visit(ctx.expr(0)));
-        no.add(new AST(42));
         no.add(visit(ctx.expr(1)));
 //        TpPrimitivo result = TpPrimitivo.tabComp(tp1, tp2);
 //        int linha = ctx.start.getLine();
@@ -246,9 +234,8 @@ public class VisitorIR extends GPortugolBaseVisitor<AST> {
 
     @Override
     public AST visitExprAddSub(GPortugolParser.ExprAddSubContext ctx) {
-        AST no = new AST(39);
+        AST no = new AST(ctx.op.getType());
         no.add(visit(ctx.expr(0)));
-        no.add(new AST(ctx.op.getType()));
         no.add(visit(ctx.expr(1)));
 //        TpPrimitivo result = TpPrimitivo.tabBasicOp(tp1, tp2);
 //        int linha = ctx.start.getLine();
@@ -270,9 +257,8 @@ public class VisitorIR extends GPortugolBaseVisitor<AST> {
 
     @Override
     public AST visitExprMultDiv(GPortugolParser.ExprMultDivContext ctx) {
-        AST no = new AST(40);
+        AST no = new AST(ctx.op.getType());
         no.add(visit(ctx.expr(0)));
-        no.add(new AST(ctx.op.getType()));
         no.add(visit(ctx.expr(1)));
 //        TpPrimitivo result = TpPrimitivo.tabBasicOp(tp1, tp2);
 //        int linha = ctx.start.getLine();
@@ -284,9 +270,8 @@ public class VisitorIR extends GPortugolBaseVisitor<AST> {
 
     @Override
     public AST visitExprAtrrib(GPortugolParser.ExprAtrribContext ctx) {
-        AST no = new AST(37);
+        AST no = new AST(ctx.op.getType());
         no.add(visit(ctx.expr(0)));
-        no.add(new AST(ctx.op.getType()));
         no.add(visit(ctx.expr(1)));
 //        TpPrimitivo result = TpPrimitivo.tabComp(tp1, tp2);
 //        int linha = ctx.start.getLine();
@@ -298,9 +283,8 @@ public class VisitorIR extends GPortugolBaseVisitor<AST> {
 
     @Override
     public AST visitExprBinaryAnd(GPortugolParser.ExprBinaryAndContext ctx) {
-        AST no = new AST(36);
+        AST no = new AST(44);
         no.add(visit(ctx.expr(0)));
-        no.add(new AST(44));
         no.add(visit(ctx.expr(1)));
 //        TpPrimitivo result = TpPrimitivo.tabComp(tp1, tp2);
 //        int linha = ctx.start.getLine();
@@ -312,9 +296,8 @@ public class VisitorIR extends GPortugolBaseVisitor<AST> {
 
     @Override
     public AST visitExprAnd(GPortugolParser.ExprAndContext ctx) {
-        AST no = new AST(33);
+        AST no = new AST(ctx.op.getType());
         no.add(visit(ctx.expr(0)));
-        no.add(new AST(ctx.op.getType()));
         no.add(visit(ctx.expr(1)));
 //        TpPrimitivo result = TpPrimitivo.tabComp(tp1, tp2);
 //        int linha = ctx.start.getLine();
@@ -340,9 +323,8 @@ public class VisitorIR extends GPortugolBaseVisitor<AST> {
 
     @Override
     public AST visitExprPow(GPortugolParser.ExprPowContext ctx) {
-        AST no = new AST(35);
+        AST no = new AST(43);
         no.add(visit(ctx.expr(0)));
-        no.add(new AST(43));
         no.add(visit(ctx.expr(1)));
 //        TpPrimitivo result = TpPrimitivo.tabComp(tp1, tp2);
 //        int linha = ctx.start.getLine();
@@ -364,7 +346,7 @@ public class VisitorIR extends GPortugolBaseVisitor<AST> {
 
     @Override
     public AST visitFcall(GPortugolParser.FcallContext ctx) {
-        AST no = new AST(46);
+        AST no = new AST(30);
         int linha = ctx.start.getLine();
 //        String nome = ctx.T_IDENTIFICADOR().getText();
         no.add(new AST(67, ctx.T_IDENTIFICADOR().getText(), linha));
@@ -400,7 +382,7 @@ public class VisitorIR extends GPortugolBaseVisitor<AST> {
 
     @Override
     public AST visitFunc_decls(GPortugolParser.Func_declsContext ctx) {
-        AST no = new AST(54);
+        AST no = new AST(58);
 //        int linha = ctx.start.getLine();
 //        String nome = ctx.T_IDENTIFICADOR().getText();
         no.add(new AST(67, ctx.T_IDENTIFICADOR().getText()));
