@@ -30,13 +30,14 @@ public class Executor {
     }
 
     public void run(AST no) {
+        //System.out.printf("No tipo %s, %d filhos\n", no.getType(), no.getChildCount());
         run(no, no.getType());
     }
 
     public void run(AST no, int tipo) {
         int tam = no.getChildCount();
         switch (tipo) {
-            case 1: {
+            case GPortugolParser.RULE_algoritmo: {
                 int i;
                 tabelaFuncoes = new TabelaSimbolos<>();
                 for (i = tam - 1; i >= 0; i--) {
@@ -53,7 +54,7 @@ public class Executor {
                 run(no.getChild(i));
                 break;
             }
-            case 4: {
+            case GPortugolParser.RULE_var_decl: {
                 TpPrimitivo tp = TpPrimitivo.translateTipo(no.getChild(0).getType());
                 for (int i = 1; i < tam; i++) {
                     AST filho = no.getChild(i);
@@ -78,19 +79,19 @@ public class Executor {
                 }
                 break;
             }
-            case 24: {
+            case GPortugolParser.RULE_stm_block: {
                 AST variavel = no.getChild(0);
                 Variavel v = new Variavel(variavel.getName(), TpPrimitivo.INDEFINIDO, variavel.getLine());
-                boolean existe = verificaVariavel(v);
+                /*boolean existe = verificaVariavel(v);
                 if (!existe) {
                     handler.instantiateErro(v);
-                }
+                }*/
                 run(no.getChild(1));
                 double valor = pop();
                 v.setValor(valor);
                 break;
             }
-            case 25: {
+            case GPortugolParser.RULE_stm_ret: {
                 int linha = no.getLine();
                 run(no.getChild(0));
                 double verificacao = pop();
@@ -99,12 +100,53 @@ public class Executor {
                 }else if(tam > 2){
                     run(no.getChild(2));
                 }
+             
 //                if (verificacao != TpPrimitivo.LOGICO) {
 //                    handler.instantiateErro(linha);
 //                }
-
                 break;
             }
+            case GPortugolParser.RULE_stm_attr: {
+            
+            
+            break;   
+            }
+            case GPortugolParser.RULE_true_block: {
+            
+                
+            break;
+            }
+            case GPortugolParser.RULE_false_block: {
+            
+            
+            break;
+            }
+            case GPortugolParser.RULE_stm_se: {
+            
+            
+            break;
+            }
+            case GPortugolParser.RULE_stm_enquanto: {
+            
+            
+            break;
+            }
+            case GPortugolParser.RULE_stm_para: {
+            
+            
+            break;
+            }
+            case GPortugolParser.RULE_passo: {
+            
+            
+            break;
+            }
+            
+            
+            
+            
+            
+            
         }
     }
 }
