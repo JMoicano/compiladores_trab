@@ -12,8 +12,13 @@ public class Funcao {
     private TpPrimitivo retorno;
     private final LinkedList<TpPrimitivo> parametros;
     private final int escopo;
+    private final AST no;
+
+    public AST getNo() {
+        return no;
+    }
     
-    public Funcao(String nome, LinkedList<TpPrimitivo> argumentos, int linha, int escopo){
+    public Funcao(String nome, LinkedList<TpPrimitivo> argumentos, int linha, int escopo, AST no){
         this.nome = nome;
         this.linha = linha;
         this.parametros = new LinkedList<>();
@@ -21,6 +26,7 @@ public class Funcao {
             this.parametros.add(argumento);
         }
         this.escopo = escopo;
+        this.no = no;
     }
 
     public int getEscopo() {
@@ -51,7 +57,7 @@ public class Funcao {
     public boolean equals(Object a){
                 if(a instanceof Funcao){
             Funcao aV = (Funcao)a;
-        return ((aV.toString().equals(this.toString()) && aV.getEscopo() == this.escopo));
+        return aV.toString().equals(this.toString());
         }else{
             return false;
         }
@@ -59,9 +65,8 @@ public class Funcao {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 37 * hash + Objects.hashCode(this.nome);
-        hash = 37 * hash + this.escopo;
+        int hash = 3;
+        hash = 29 * hash + Objects.hashCode(this.nome);
         return hash;
     }
 
