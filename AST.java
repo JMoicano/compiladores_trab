@@ -58,7 +58,9 @@ public class AST {
     }
     
     public int getChildCount(){
+        if(children!=null){
         return children.size();
+        }else return 0;
     }
     
     public double getValue(){

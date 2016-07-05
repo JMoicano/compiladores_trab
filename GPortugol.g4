@@ -129,4 +129,20 @@ ML_COMMENT				:	'/*'.*?'*/' -> skip;
 
 T_IDENTIFICADOR			:	[a-zA-Z'_'][a-zA-Z0-9'_']*;
 
+T_IGUAL                    : '=';
+T_DIFERENTE                : '<>';
+T_MAIOR                    : '>';
+T_MENOR                    : '<';
+T_MAIORIGUAL               : '>=';
+T_MENORIGUAL               : '<=';
+T_MAIS                     : '+';
+T_MENOS                    : '-';
+T_MULT                     : '*';
+T_DIV                      : '/';
+T_RESTODIV                 : '%';
+T_NAO                      : ('~'|'nao');
+
+
+
 WS     : [' ''\t''\r''\n'] -> skip ;
+

@@ -106,11 +106,75 @@ public class Executor {
 //                }
                 break;
             }
-            case GPortugolParser.RULE_stm_attr: {
-            
-            
+                        
+            //Expr
+            case GPortugolParser.T_MAIOR: {
+                double value1 = pop();
+                double value2 = pop();
+                push(value1 > value2 ? 1 : 0);
             break;   
             }
+            case GPortugolParser.T_MENOR: {
+                double value1 = pop();
+                double value2 = pop();
+                push(value1 < value2 ? 1 : 0);
+            break;   
+            }
+            case GPortugolParser.T_MAIORIGUAL: {
+                double value1 = pop();
+                double value2 = pop();
+                push(value1 >= value2 ? 1 : 0);
+            break;   
+            }
+            case GPortugolParser.T_MENORIGUAL: {
+                double value1 = pop();
+                double value2 = pop();
+                push(value1 <= value2 ? 1 : 0);
+            break;   
+            }
+            case GPortugolParser.T_IGUAL: {
+                double value1 = pop();
+                double value2 = pop();
+                push(value1 == value2 ? 1 : 0);
+            break;   
+            }
+            case GPortugolParser.T_DIFERENTE: {
+                double value1 = pop();
+                double value2 = pop();
+                push(value1 != value2 ? 1 : 0);
+            break;   
+            }
+            case GPortugolParser.T_MAIS: {
+                double value1 = pop();
+                double value2 = pop();
+                push(value1 + value2);
+            break;   
+            }
+            case GPortugolParser.T_MENOS: {
+                double value1 = pop();
+                double value2 = pop();
+                push(value1 - value2);
+            break;   
+            }
+            case GPortugolParser.T_MULT: {
+                double value1 = pop();
+                double value2 = pop();
+                push(value1 * value2);
+            break;   
+            }
+            case GPortugolParser.T_DIV: {
+                double value1 = pop();
+                double value2 = pop();
+                push(value1 / value2);
+            break;   
+            }
+            case GPortugolParser.T_RESTODIV: {
+                double value1 = pop();
+                double value2 = pop();
+                push(value1 % value2);
+            break;   
+            }
+            
             case GPortugolParser.RULE_true_block: {
             
                 
