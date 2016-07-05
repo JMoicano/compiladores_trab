@@ -127,7 +127,6 @@ T_STRING_LIT			:	'"'(~('"'|'\\'|'\r'|'\n')|'\\'.)*'"';
 SL_COMMENT				:	'//' .*? (LF|EOF) -> skip;
 ML_COMMENT				:	'/*'.*?'*/' -> skip;      
 
-T_IDENTIFICADOR			:	[a-zA-Z'_'][a-zA-Z0-9'_']*;
 
 T_ALGORITMO				: 'algoritmo';
 T_VARIAVEIS				: 'variaveis';
@@ -146,6 +145,8 @@ T_REAL					: 'real';
 T_CARACTERE				: 'caractere';
 T_LITERAL				: 'literal';
 T_LOGICO				: 'logico';
+
+T_IDENTIFICADOR			:	[a-zA-Z'_'][a-zA-Z0-9'_']*;
 
 T_ATTR					: ':=';
 

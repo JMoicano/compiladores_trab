@@ -26,6 +26,25 @@ public class Executor {
         return tabelaVariaveis.get(f);
     }
 
+    private String evaluateStr(AST no) {
+        String str = "";
+        if (no.getType() == GPortugolParser.WS) {
+            if(no.getChild(1).getType() == GPortugolParser.T_STRING_LIT){
+                str += no.getChild(1).toString();
+            }else{
+                str += evaluateStr(no.getChild(1));
+            }
+        }else{
+            run(no);
+            if(no.getTipo() == TipoAST.INT){
+                str += String.valueOf((int)pop());
+            }else{
+                str += String.valueOf(pop());
+            }
+        }
+        return str;
+    }
+
     private Funcao getFuncao(AST no) {
         String nome = no.getName();
         int escopo = (int) no.getValue();
@@ -257,18 +276,26 @@ public class Executor {
                 }
                 break;
             }
+            case GPortugolParser.T_VARIAVEIS:{
+                Variavel v = getVariavel(no);
+                if(v.getTipo() == TpPrimitivo.INTEIRO){
+                    no.setTipo(TipoAST.INT);
+                }
+                push(v.getValor());
+                break;
+            }
             case GPortugolParser.T_FUNCAO: {
                 Funcao f = getFuncao(no);
-                for (int i = tam - 1; i >= 0; i--) {
-                    run(no.getChild(i));
-                }
-                if (no.getName().equals("imprime")) {
+                if (no.getName().equals("imprima")) {
                     String out = "";
                     for (int i = 0; i < tam; i++) {
-                        out += pop() + "";
+                        out += evaluateStr(no.getChild(i));
                     }
                     System.out.println(out);
                 } else {
+                    for (int i = tam - 1; i >= 0; i--) {
+                        run(no.getChild(i));
+                    }
                     AST funNo = f.getNo();
                     AST paramsNo = funNo.getChild(0);
                     for (AST param : paramsNo.getChildren()) {

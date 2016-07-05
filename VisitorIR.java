@@ -59,7 +59,6 @@ public class VisitorIR extends GPortugolBaseVisitor<AST> {
         int linha = ctx.start.getLine();
         String nome = ctx.T_IDENTIFICADOR().getText();
         LinkedList<TpPrimitivo> params = new LinkedList<>();
-        tabelaVariaveis = new TabelaSimbolos<>();
         AST no = new AST(GPortugolParser.T_ALGORITMO);
         AST paramsNo = new AST(GPortugolParser.ML_COMMENT);
         if (ctx.fparams() != null) {
@@ -189,6 +188,7 @@ public class VisitorIR extends GPortugolBaseVisitor<AST> {
     @Override
     public AST visitPasso(GPortugolParser.PassoContext ctx) {
         AST no = new AST(GPortugolParser.T_PASSO);
+        no.setTipo(TipoAST.INT);
         no.add(new AST(ctx.op.getType()));
         no.add(new AST(GPortugolParser.T_INT_LIT, Integer.parseInt(ctx.T_INT_LIT().getText())));
         return no;
@@ -199,16 +199,24 @@ public class VisitorIR extends GPortugolBaseVisitor<AST> {
         AST no = new AST(ctx.op.getType());
         no.add(visit(ctx.expr(0)));
         no.add(visit(ctx.expr(1)));
+        if(no.getChild(0).getTipo() == TipoAST.DOUBLE || no.getChild(1).getTipo() == TipoAST.DOUBLE){
+            no.setTipo(TipoAST.DOUBLE);
+        }else{
+            no.setTipo(TipoAST.INT);
+        }
         return no;
     }
 
     @Override
     public AST visitExprTermo(GPortugolParser.ExprTermoContext ctx) {
         AST no = new AST(GPortugolParser.WS); //Gambiarra
+        AST op = new AST(GPortugolParser.T_MAIS);
         if (ctx.op != null) {
-            no.add(new AST(ctx.op.getType()));
+            op = new AST(ctx.op.getType());
         }
+        no.add(op);
         no.add(visit(ctx.termo()));
+        no.setTipo(no.getChild(1).getTipo());
         return no;
     }
 
@@ -235,32 +243,44 @@ public class VisitorIR extends GPortugolBaseVisitor<AST> {
     
     @Override
     public AST visitLitInt(GPortugolParser.LitIntContext ctx) {
-        return new AST(GPortugolParser.T_INT_LIT, Integer.parseInt(ctx.T_INT_LIT().getText()));
+        AST no = new AST(GPortugolParser.T_INT_LIT, Integer.parseInt(ctx.T_INT_LIT().getText()));
+        no.setTipo(TipoAST.INT);
+        return no;
     }
 
     @Override
     public AST visitLitReal(GPortugolParser.LitRealContext ctx) {
-        return new AST(GPortugolParser.T_REAL_LIT, Double.parseDouble(ctx.T_REAL_LIT().getText()));
+        AST no = new AST(GPortugolParser.T_REAL_LIT, Double.parseDouble(ctx.T_REAL_LIT().getText()));
+        no.setTipo(TipoAST.DOUBLE);
+        return no;
     }
 
     @Override
     public AST visitLitCar(GPortugolParser.LitCarContext ctx) {
-        return new AST(GPortugolParser.T_CARAC_LIT, ctx.T_CARAC_LIT().getText().charAt(0));
+        AST no =new AST(GPortugolParser.T_CARAC_LIT, ctx.T_CARAC_LIT().getText().charAt(0));
+        no.setTipo(TipoAST.STRING);
+        return no;
     }
 
     @Override
     public AST visitLitLit(GPortugolParser.LitLitContext ctx) {
-        return new AST(GPortugolParser.T_STRING_LIT, ctx.T_STRING_LIT().getText());
+        AST no = new AST(GPortugolParser.T_STRING_LIT, ctx.T_STRING_LIT().getText());;
+        no.setTipo(TipoAST.STRING);
+        return no;
     }
 
     @Override
     public AST visitLitTrue(GPortugolParser.LitTrueContext ctx) {
-        return new AST(GPortugolParser.T_LOGICO, 1);
+        AST no = new AST(GPortugolParser.T_LOGICO, 1);
+        no.setTipo(TipoAST.INT);
+        return no;
     }
 
     @Override
     public AST visitLitFalse(GPortugolParser.LitFalseContext ctx) {
-        return new AST(GPortugolParser.T_LOGICO, 0);
+        AST no = new AST(GPortugolParser.T_LOGICO, 0);
+        no.setTipo(TipoAST.INT);
+        return no;
     }
 
     @Override

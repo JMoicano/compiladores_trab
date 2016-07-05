@@ -1,11 +1,6 @@
 
 import java.util.ArrayList;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 /**
  *
  * @author 2012100265
@@ -13,6 +8,15 @@ import java.util.ArrayList;
 public class AST {
 
     private int type;
+    private TipoAST tipo;
+
+    public void setTipo(TipoAST tipo) {
+        this.tipo = tipo;
+    }
+
+    public TipoAST getTipo() {
+        return tipo;
+    }
     private String name;
     private double value;
     private TpPrimitivo tpPrimitivo;
@@ -30,6 +34,7 @@ public class AST {
     public AST(int type, String name) {
         this(type);
         this.name = name;
+        this.tipo = TipoAST.STRING;
     }
 
     public AST(int type, String name, int escopo) {
@@ -41,11 +46,13 @@ public class AST {
     public AST(int type, int value) {
         this(type);
         this.value = value;
+        this.tipo = TipoAST.INT;
     }
 
     public AST(int type, double value) {
         this(type);
         this.value = value;
+        this.tipo = TipoAST.DOUBLE;
     }
 
     public AST(int type, TpPrimitivo tpPrimitivo) {
@@ -83,5 +90,19 @@ public class AST {
 
     public TpPrimitivo getTpPrimitivo() {
         return tpPrimitivo;
+    }
+
+    @Override
+    public String toString() {
+        String ret;
+        if (tipo == TipoAST.STRING) {
+            ret = name;
+        } else if (tipo == TipoAST.INT) {
+            int saida = (int) value;
+            ret = String.valueOf(saida);
+        } else {
+            ret = String.valueOf(value);
+        }
+        return ret;
     }
 }

@@ -7,6 +7,7 @@ import java.util.Objects;
  * @author John
  */
 public class Funcao {
+
     private final String nome;
     private final int linha;
     private TpPrimitivo retorno;
@@ -17,13 +18,15 @@ public class Funcao {
     public AST getNo() {
         return no;
     }
-    
-    public Funcao(String nome, LinkedList<TpPrimitivo> argumentos, int linha, int escopo, AST no){
+
+    public Funcao(String nome, LinkedList<TpPrimitivo> argumentos, int linha, int escopo, AST no) {
         this.nome = nome;
         this.linha = linha;
         this.parametros = new LinkedList<>();
-        for (TpPrimitivo argumento : argumentos) {
-            this.parametros.add(argumento);
+        if (argumentos != null) {
+            for (TpPrimitivo argumento : argumentos) {
+                this.parametros.add(argumento);
+            }
         }
         this.escopo = escopo;
         this.no = no;
@@ -32,33 +35,33 @@ public class Funcao {
     public int getEscopo() {
         return escopo;
     }
-    
-    public String getNome(){
+
+    public String getNome() {
         return this.nome;
     }
-    
-    public int getAridade(){
+
+    public int getAridade() {
         return parametros.size();
     }
-    
-    public LinkedList<TpPrimitivo> getParametros(){
+
+    public LinkedList<TpPrimitivo> getParametros() {
         return this.parametros;
     }
-    
-    public void setRetorno(TpPrimitivo retorno){
+
+    public void setRetorno(TpPrimitivo retorno) {
         this.retorno = retorno;
     }
-    
-    public TpPrimitivo getRetorno(){
+
+    public TpPrimitivo getRetorno() {
         return this.retorno;
     }
-    
+
     @Override
-    public boolean equals(Object a){
-                if(a instanceof Funcao){
-            Funcao aV = (Funcao)a;
-        return aV.toString().equals(this.toString());
-        }else{
+    public boolean equals(Object a) {
+        if (a instanceof Funcao) {
+            Funcao aV = (Funcao) a;
+            return aV.toString().equals(this.toString());
+        } else {
             return false;
         }
     }

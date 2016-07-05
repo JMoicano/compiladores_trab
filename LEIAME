@@ -1,10 +1,22 @@
 PARA COMPILAR:
-- Ter antlr-4.5-complete.jar na pasta /usr/local/lib/ (ou mudar o endereço da variável LIB no Makefile)
+- Ter antlr-4.5.3-complete.jar na pasta /usr/local/lib/ (ou mudar o endereço da variável LIB no Makefile)
 - Rodar o comando: "make"
 
 PARA RODAR:
-- Rodar o comando: "java Trab2 <ARQUIVO DE ENTRADA.gpt> <ARQUIVO DE SAIDA.dot>""
-- Rodar o comando: "dot -Tpdf <ARQUIVO DE SAIDA.dot> -o <ARQUIVO.pdf>"
+- Rodar o comando: "java Trab2 <ARQUIVO DE ENTRADA.gpt> [ARQUIVO DE SAIDA (opicional)]"
 
 PARA LIMPAR:
-- Rodar o comando: "make clean" **ATENÇÃO, APAGA OS ARQUIVOS .dot E .pdf**
+- Rodar o comando: "make clean"
+
+INFORMACOES:
+Compilador de GPortugol (Considerando um código sem erros de sintaxe e semantica)
+
+Implementacoes:
+- Operações com inteiros e reais;
+- Operações lógicas com booleanos;
+- Comandos for;
+- Comandos de atribuica;
+- Comandos se-entao-senao;
+- Comandos enquanto;
+- Chamadas de funcao;
+- Impressao de string no terminal
