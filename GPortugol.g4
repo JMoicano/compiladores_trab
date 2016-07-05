@@ -12,11 +12,11 @@ var_decl_block		:	T_VARIAVEIS (var_decl ';')+ 'fim_variaveis'
 var_decl			:	T_IDENTIFICADOR (',' T_IDENTIFICADOR)* ':' (tp_primitivo | tp_matriz)
 					;
 
-tp_primitivo		:	T_INTEIRO
-					| 	T_REAL
-					|	T_CARACTERE
-					|	T_LITERAL
-					|	T_LOGICO
+tp_primitivo		:	T_INTEIRO		
+					| 	T_REAL			
+					|	T_CARACTERE		
+					|	T_LITERAL		
+					|	T_LOGICO		
 					;
 
 tp_matriz			:	'matriz' ('[' T_INT_LIT ']')+ 'de' tp_prim_pl
@@ -51,7 +51,7 @@ true_block : stm_list+ ;
 
 false_block : stm_list+ ;
 
-stm_se				:	T_SE expr 'entao' true_block ('senao' false_block)? 'fim_se'
+stm_se				:	T_SE expr T_ENTAO true_block ('senao' false_block)? 'fim_se'
 					;
 
 stm_enquanto		:	T_ENQUANTO expr 'faca' stm_list+ 'fim_enquanto'
@@ -60,19 +60,19 @@ stm_enquanto		:	T_ENQUANTO expr 'faca' stm_list+ 'fim_enquanto'
 stm_para			:	T_PARA lvalue 'de' expr 'ate' expr passo? 'faca' stm_list+ 'fim_para'
 					;
 
-passo				:	T_PASSO op=('+'|'-')? T_INT_LIT
+passo				:	T_PASSO op=(T_MAIS|T_MENOS)? T_INT_LIT
 					;
 
-expr				:	expr op=(T_OU) expr											#ExprOr
-					|	expr op=(T_E) expr											#ExprAnd
-					|	expr ('|') expr												#ExprBinaryOr
-					|	expr ('^') expr												#ExprPow
-					|	expr ('&') expr												#ExprBinaryAnd
-					|	expr op=(T_IGUAL|T_DIFERENTE) expr							#ExprAtrrib
-					|	expr op=(T_MAIOR|T_MAIORIGUAL|T_MENOR|T_MENORIGUAL) expr	#ExprComp
-					|	expr op=(T_MAIS | T_MENOS) expr								#ExprAddSub
-					|	expr op=(T_DIV|T_MULT|T_MOD) expr							#ExprMultDiv
-					|	op=('+'|'-'|T_NAO)? termo									#ExprTermo
+expr				:	expr (T_OU) expr											#ExprBinary
+					|	expr (T_E) expr											#ExprBinary
+					|	expr ('|') expr												#ExprBinary
+					|	expr ('^') expr												#ExprBinary
+					|	expr ('&') expr												#ExprBinary
+					|	expr op=(T_IGUAL|T_DIFERENTE) expr							#ExprBinary
+					|	expr op=(T_MAIOR|T_MAIORIGUAL|T_MENOR|T_MENORIGUAL) expr	#ExprBinary
+					|	expr op=(T_MAIS | T_MENOS) expr								#ExprBinary
+					|	expr op=(T_DIV|T_MULT|T_MOD) expr							#ExprBinary
+					|	op=(T_MAIS|T_MENOS|T_NAO)? termo									#ExprTermo
 					;
 
 termo				:	fcall			#default_termo
@@ -85,12 +85,12 @@ fcall				:	T_IDENTIFICADOR '(' fargs? ')';
 
 fargs				:	expr (',' expr)*;
 
-literal				:	T_STRING_LIT
-					|	T_INT_LIT
-					|	T_REAL_LIT
-					|	T_CARAC_LIT
-					|	T_KW_VERDADEIRO
-					|	T_KW_FALSO
+literal				:	T_STRING_LIT		#litLit
+					|	T_INT_LIT			#litInt
+					|	T_REAL_LIT			#litReal
+					|	T_CARAC_LIT			#litCar
+					|	T_KW_VERDADEIRO		#litTrue
+					|	T_KW_FALSO			#litFalse
 					;
 
 func_decls			:	T_FUNCAO T_IDENTIFICADOR '(' fparams? ')' (':' tp_primitivo)? fvar_decl stm_block
@@ -132,8 +132,10 @@ T_IDENTIFICADOR			:	[a-zA-Z'_'][a-zA-Z0-9'_']*;
 T_ALGORITMO				: 'algoritmo';
 T_VARIAVEIS				: 'variaveis';
 T_INICIO				: 'inicio';
-T_RETORNE				: 'retorne'
+T_RETORNE				: 'retorne';
 T_SE					: 'se';
+T_ENTAO					: 'entao';
+T_SENAO					: 'senao';
 T_ENQUANTO				: 'enquanto';
 T_PARA					: 'para';
 T_PASSO					: 'passo';

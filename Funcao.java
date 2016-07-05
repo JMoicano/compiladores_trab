@@ -11,14 +11,20 @@ public class Funcao {
     private final int linha;
     private TpPrimitivo retorno;
     private final LinkedList<TpPrimitivo> parametros;
+    private final int escopo;
     
-    public Funcao(String nome, LinkedList<TpPrimitivo> argumentos, int linha){
+    public Funcao(String nome, LinkedList<TpPrimitivo> argumentos, int linha, int escopo){
         this.nome = nome;
         this.linha = linha;
         this.parametros = new LinkedList<>();
         for (TpPrimitivo argumento : argumentos) {
             this.parametros.add(argumento);
         }
+        this.escopo = escopo;
+    }
+
+    public int getEscopo() {
+        return escopo;
     }
     
     public String getNome(){
@@ -43,14 +49,19 @@ public class Funcao {
     
     @Override
     public boolean equals(Object a){
-        return ((a instanceof Funcao || a instanceof String)
-                && a.toString().equals(this.toString()));
+                if(a instanceof Funcao){
+            Funcao aV = (Funcao)a;
+        return ((aV.toString().equals(this.toString()) && aV.getEscopo() == this.escopo));
+        }else{
+            return false;
+        }
     }
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 97 * hash + Objects.hashCode(this.nome);
+        int hash = 7;
+        hash = 37 * hash + Objects.hashCode(this.nome);
+        hash = 37 * hash + this.escopo;
         return hash;
     }
 

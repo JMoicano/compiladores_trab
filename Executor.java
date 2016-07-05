@@ -8,8 +8,8 @@ import java.util.Stack;
  */
 public class Executor {
 
-    private static TabelaSimbolos<Variavel> tabelaVariaveis;
-    private static TabelaSimbolos<Funcao> tabelaFuncoes;
+    private TabelaSimbolos<Variavel> tabelaVariaveis;
+    private TabelaSimbolos<Funcao> tabelaFuncoes;
     private static LinkedList<Funcao> funcoesUsadas;
     private static final ErrorHandler handler = new ErrorHandler();
     private static final Stack<Double> pilha = new Stack<>();
@@ -26,7 +26,9 @@ public class Executor {
         pilha.push(item);
     }
 
-    public Executor() {
+    public Executor(TabelaSimbolos<Variavel> tabelaVariaveis, TabelaSimbolos<Funcao> tabelaFuncoes) {
+        this.tabelaVariaveis = tabelaVariaveis;
+        this.tabelaFuncoes = tabelaFuncoes;
     }
 
     public void run(AST no) {
@@ -37,180 +39,45 @@ public class Executor {
     public void run(AST no, int tipo) {
         int tam = no.getChildCount();
         switch (tipo) {
-            case GPortugolParser.RULE_algoritmo: {
-                int i;
-                tabelaFuncoes = new TabelaSimbolos<>();
-                for (i = tam - 1; i >= 0; i--) {
-                    if (no.getChild(i).getType() != 54) {
-                        break;
-                    }
-                    run(no.getChild(i));
-                }
-                tabelaVariaveis = new TabelaSimbolos<>();
-                int j;
-                for (j = 0; j < i; j++) {
-                    run(no.getChild(j));
-                }
-                run(no.getChild(i));
-                break;
-            }
-            case GPortugolParser.RULE_var_decl: {
-                TpPrimitivo tp = TpPrimitivo.translateTipo(no.getChild(0).getType());
-                for (int i = 1; i < tam; i++) {
-                    AST filho = no.getChild(i);
-                    int lineNum = filho.getLine();
-                    Variavel v = new Variavel(filho.getName(), tp, lineNum);
-                    if (!tabelaVariaveis.add(v)) {
-                        Variavel original = tabelaVariaveis.get(v);
-                        handler.instantiateErro(original, lineNum);
-                    }
+            case GPortugolParser.T_ALGORITMO | GPortugolParser.T_ENTAO | GPortugolParser.T_SENAO: {
+                for (AST child : no.getChildren()) {
+                    run(child);
                 }
                 break;
             }
-            case 21: {
-                for (int i = 0; i < tam; i++) {
-                    run(no.getChild(i));
-                }
+            case GPortugolParser.T_RETORNE: {
                 break;
             }
-            case 23: {
-                if (tam > 0) {
-                    run(no.getChild(0));
-                }
-                break;
-            }
-            case GPortugolParser.RULE_stm_block: {
-                AST variavel = no.getChild(0);
-                Variavel v = new Variavel(variavel.getName(), TpPrimitivo.INDEFINIDO, variavel.getLine());
-                /*boolean existe = verificaVariavel(v);
-                if (!existe) {
-                    handler.instantiateErro(v);
-                }*/
+            case GPortugolParser.T_ATTR: {
+                String nome = no.getChild(0).getName();
+                int escopo = (int) no.getChild(0).getValue();
+                Variavel f = new Variavel(nome, TpPrimitivo.INDEFINIDO, -1, escopo);
+                Variavel v = tabelaVariaveis.get(f);
                 run(no.getChild(1));
-                double valor = pop();
-                v.setValor(valor);
+                v.setValor(pop());
                 break;
             }
-            case GPortugolParser.RULE_stm_ret: {
-                int linha = no.getLine();
+            case GPortugolParser.T_SE: {
                 run(no.getChild(0));
-                double verificacao = pop();
+                int verificacao = (int) pop();
                 if(verificacao != 0){
-                    run(no.getChild(1));
+                   run(no.getChild(1)); 
                 }else if(tam > 2){
                     run(no.getChild(2));
                 }
-             
-//                if (verificacao != TpPrimitivo.LOGICO) {
-//                    handler.instantiateErro(linha);
-//                }
                 break;
             }
-                        
-            //Expr
-            case GPortugolParser.T_MAIOR: {
-                double value1 = pop();
-                double value2 = pop();
-                push(value1 > value2 ? 1 : 0);
-            break;   
+            case GPortugolParser.T_ENQUANTO:{
+                run(no.getChild(0));
+                int verificacao = (int)pop();
+                while(verificacao != 0){
+                    for(int i = 1; i < tam; i++){
+                        run(no.getChild(i));
+                    }
+                    run(no.getChild(0));
+                    verificacao = (int)pop();
+                }
             }
-            case GPortugolParser.T_MENOR: {
-                double value1 = pop();
-                double value2 = pop();
-                push(value1 < value2 ? 1 : 0);
-            break;   
-            }
-            case GPortugolParser.T_MAIORIGUAL: {
-                double value1 = pop();
-                double value2 = pop();
-                push(value1 >= value2 ? 1 : 0);
-            break;   
-            }
-            case GPortugolParser.T_MENORIGUAL: {
-                double value1 = pop();
-                double value2 = pop();
-                push(value1 <= value2 ? 1 : 0);
-            break;   
-            }
-            case GPortugolParser.T_IGUAL: {
-                double value1 = pop();
-                double value2 = pop();
-                push(value1 == value2 ? 1 : 0);
-            break;   
-            }
-            case GPortugolParser.T_DIFERENTE: {
-                double value1 = pop();
-                double value2 = pop();
-                push(value1 != value2 ? 1 : 0);
-            break;   
-            }
-            case GPortugolParser.T_MAIS: {
-                double value1 = pop();
-                double value2 = pop();
-                push(value1 + value2);
-            break;   
-            }
-            case GPortugolParser.T_MENOS: {
-                double value1 = pop();
-                double value2 = pop();
-                push(value1 - value2);
-            break;   
-            }
-            case GPortugolParser.T_MULT: {
-                double value1 = pop();
-                double value2 = pop();
-                push(value1 * value2);
-            break;   
-            }
-            case GPortugolParser.T_DIV: {
-                double value1 = pop();
-                double value2 = pop();
-                push(value1 / value2);
-            break;   
-            }
-            case GPortugolParser.T_RESTODIV: {
-                double value1 = pop();
-                double value2 = pop();
-                push(value1 % value2);
-            break;   
-            }
-            
-            case GPortugolParser.RULE_true_block: {
-            
-                
-            break;
-            }
-            case GPortugolParser.RULE_false_block: {
-            
-            
-            break;
-            }
-            case GPortugolParser.RULE_stm_se: {
-            
-            
-            break;
-            }
-            case GPortugolParser.RULE_stm_enquanto: {
-            
-            
-            break;
-            }
-            case GPortugolParser.RULE_stm_para: {
-            
-            
-            break;
-            }
-            case GPortugolParser.RULE_passo: {
-            
-            
-            break;
-            }
-            
-            
-            
-            
-            
-            
         }
     }
 }

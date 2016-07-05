@@ -7,11 +7,17 @@ public class Variavel {
     private double valor;
     private final TpPrimitivo tipo;
     private final int linha;
+    private final int escopo;
 
-    public Variavel(String nome, TpPrimitivo tp, int linha){
+    public Variavel(String nome, TpPrimitivo tp, int linha, int escopo){
         this.nome = nome;
         this.tipo = tp;
         this.linha = linha;
+        this.escopo = escopo;
+    }
+
+    public int getEscopo() {
+        return escopo;
     }
     
     public int getLinha() {
@@ -41,14 +47,20 @@ public class Variavel {
     
     @Override
     public boolean equals(Object a){
-        return ((a instanceof Variavel || a instanceof String)
-                && a.toString().equals(this.toString()));
+        if(a instanceof Variavel){
+            Variavel aV = (Variavel)a;
+        return ((aV.toString().equals(this.toString()) && aV.getEscopo() == this.escopo));
+        }else{
+            return false;
+        }
     }
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 89 * hash + Objects.hashCode(this.nome);
+        int hash = 7;
+        hash = 83 * hash + Objects.hashCode(this.nome);
+        hash = 83 * hash + this.escopo;
         return hash;
     }
+
 }

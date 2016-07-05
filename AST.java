@@ -6,80 +6,82 @@ import java.util.ArrayList;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author 2012100265
  */
 public class AST {
+
     private int type;
     private String name;
     private double value;
     private TpPrimitivo tpPrimitivo;
-    private final ArrayList <AST> children;
-    
-    public AST(int type){
+    private final ArrayList<AST> children;
+
+    public ArrayList<AST> getChildren() {
+        return children;
+    }
+
+    public AST(int type) {
         this.type = type;
         this.children = new ArrayList<>();
     }
-    
-    public AST(int type, String name){
+
+    public AST(int type, String name) {
         this(type);
         this.name = name;
     }
-    
-    public AST(int type, String name, int line){
+
+    public AST(int type, String name, int escopo) {
         this(type);
         this.name = name;
-        this.value = line;
+        this.value = escopo;
     }
-    
-    public AST(int type, int value){
+
+    public AST(int type, int value) {
         this(type);
         this.value = value;
     }
-    
-    public AST(int type, double value){
+
+    public AST(int type, double value) {
         this(type);
         this.value = value;
     }
-    
-    public AST(int type, TpPrimitivo tpPrimitivo){
+
+    public AST(int type, TpPrimitivo tpPrimitivo) {
         this(type);
         this.tpPrimitivo = tpPrimitivo;
     }
-    
-    public void add(AST n){
+
+    public void add(AST n) {
         children.add(n);
     }
-    
-    public AST getChild(int i){
+
+    public AST getChild(int i) {
         return children.get(i);
     }
-    
-    public int getChildCount(){
-        if(children!=null){
-        return children.size();
-        }else return 0;
+
+    public int getChildCount() {
+        if (children != null) {
+            return children.size();
+        } else {
+            return 0;
+        }
     }
-    
-    public double getValue(){
+
+    public double getValue() {
         return value;
     }
-    
-    public String getName(){
+
+    public String getName() {
         return name;
     }
-    
-    public int getLine(){
-        return (int)value;
-    }
-    
-    public int getType(){
+
+    public int getType() {
         return type;
     }
-    
-    public TpPrimitivo getTpPrimitivo(){
+
+    public TpPrimitivo getTpPrimitivo() {
         return tpPrimitivo;
     }
 }

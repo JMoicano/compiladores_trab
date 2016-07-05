@@ -6,10 +6,8 @@ public class TabelaSimbolos<T> {
 
     private final HashMap<Integer, LinkedList<T>> tabela;
     private int contagem = 0;
-    private final int tamanho;
 
     public TabelaSimbolos() {
-        this.tamanho = 3571;
         this.tabela = new HashMap<>();
     }
 

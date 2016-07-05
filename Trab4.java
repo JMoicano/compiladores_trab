@@ -29,9 +29,12 @@ public class Trab4 {
         GPortugolParser parser = new GPortugolParser(tokens);
         ParseTree tree = parser.algoritmo();
 
-        VisitorIR visitor = new VisitorIR();
+        TabelaSimbolos<Variavel> tabelaVariaveis = new TabelaSimbolos<>();
+        TabelaSimbolos<Funcao> tabelaFuncoes = new TabelaSimbolos<>();
+        
+        VisitorIR visitor = new VisitorIR(tabelaVariaveis, tabelaFuncoes);
         AST ast = visitor.visit(tree);
-        Executor exec = new Executor();
+        Executor exec = new Executor(tabelaVariaveis, tabelaFuncoes);
         exec.run(ast);
     }
 }
